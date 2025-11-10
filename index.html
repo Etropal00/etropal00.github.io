@@ -1,10 +1,12 @@
-<!DOCTYPE html>
+from pathlib import Path
+
+# Updated HTML with animated pulse ring and attention tooltip for Messenger bubble
+html_animated = """<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ewick Lab - Là où l'IA parle québécois</title>
-  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -21,7 +23,6 @@
     }
   </script>
   <style>
-    /* 🌌 Fond animé futuriste (dégradé en mouvement) */
     body{
       font-family: 'Inter', system-ui, sans-serif;
       background: radial-gradient(1200px 600px at 10% 10%, #1e3a8a 0%, #0f172a 60%, #0b1324 100%);
@@ -33,13 +34,6 @@
       0%{ background-position: 0% 0%; }
       100%{ background-position: 100% 50%; }
     }
-    /* Voile sombre pour lisibilité */
-    .page-wrap::before{
-      content:"";
-      position:fixed; inset:0;
-      background:linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.6));
-      pointer-events:none; z-index:-1;
-    }
     .section-card{
       background-color:#1e293b;
       box-shadow:0 10px 15px -3px rgba(0,0,0,.25), 0 4px 6px -4px rgba(0,0,0,.2);
@@ -47,572 +41,140 @@
     }
     .section-card:hover{ transform:translateY(-3px); box-shadow:0 20px 30px -6px rgba(59,130,246,.45); }
     .neon-glow{ text-shadow:0 0 6px #3b82f6, 0 0 14px #3b82f6; }
-    .button-primary{ transition:background-color .3s, transform .1s, box-shadow .3s; }
-    .button-primary:hover{ transform:translateY(-2px); box-shadow:0 6px 18px rgba(59,130,246,.6); }
-    .chat-message{ max-width:90%; padding:10px 15px; border-radius:18px; margin-bottom:10px; word-wrap:break-word; }
-    .user-message{ background-color:#3b82f6; align-self:flex-end; margin-left:auto; }
-    .ai-message{ background-color:#475569; align-self:flex-start; margin-right:auto; }
+
+    /* Pulse ring animation for Messenger bubble */
+    .pulse-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 9999px;
+      box-shadow: 0 0 0 0 rgba(59,130,246,0.7);
+      animation: pulse 2.2s ease-out infinite;
+      pointer-events: none;
+    }
+    @keyframes pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(59,130,246,0.7); opacity: 1; }
+      70%  { box-shadow: 0 0 0 18px rgba(59,130,246,0); opacity: .25; }
+      100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); opacity: 0; }
+    }
+
+    /* Tooltip bubble */
+    .hint {
+      position: fixed;
+      right: 6.5rem; bottom: 6.5rem;
+      background: rgba(17,24,39,.9);
+      color: #fff;
+      padding: .55rem .8rem;
+      border-radius: .6rem;
+      font-size: .9rem;
+      border: 1px solid rgba(59,130,246,.35);
+      backdrop-filter: blur(4px);
+      opacity: 0; transform: translateY(6px);
+      animation: hintIn .8s ease forwards 1.2s;
+      pointer-events: none;
+      z-index: 30;
+    }
+    .hint:after {
+      content: "";
+      position: absolute;
+      right: -6px; bottom: 10px;
+      width: 0; height: 0;
+      border-left: 6px solid rgba(17,24,39,.9);
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+      filter: drop-shadow(-1px 0 0 rgba(59,130,246,.35));
+    }
+    @keyframes hintIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Respect prefers-reduced-motion */
+    @media (prefers-reduced-motion: reduce) {
+      .pulse-ring { animation: none; }
+      .hint { animation: none; opacity: 1; transform: none; }
+      body { animation: none; }
+    }
   </style>
-  <script>
-    /* (la partie API peut rester telle quelle si tu l’utilises) */
-    const apiKey = "";
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-    const SYSTEM_INSTRUCTION_EDHICK = "Tu es EdHick GPT, l'intelligence artificielle québécoise et humoristique du Ewick Lab. Ton ton est amical, décontracté, et tu utilises des expressions québécoises. Tu es brillant et créatif. Aide l'utilisateur à générer des idées de contenu, des blagues, ou des concepts créatifs pour la vidéo ou l'image (comme Sora ou Gemini). Sois concis, drôle, et n'hésite pas à incorporer des éléments locaux du Québec dans tes réponses. Commence toujours ta réponse par une salutation en québécois (ex: 'Salut l'ami!', 'Hey l'artiste!').";
-  </script>
 </head>
 <body class="min-h-screen">
-<div class="page-wrap">
-  <!-- 🖼️ HÉRO BANNIÈRE PLEIN ÉCRAN -->
-  <section class="relative w-full h-[42vh] sm:h-[50vh] lg:h-[58vh] overflow-hidden border-b border-lab-accent/30">
-    <img
-      src="https://etropal00.github.io/photo.png"
-      alt="Bannière Ewick Lab"
-      class="absolute inset-0 w-full h-full object-cover" />
-    <!-- voile sombre local pour contraste du texte -->
-    <div class="absolute inset-0 bg-black/35"></div>
+
+  <section class="relative w-full h-[45vh] sm:h-[55vh] lg:h-[60vh] overflow-hidden border-b border-lab-accent/30">
+    <img src="https://etropal00.github.io/photo.png" alt="Bannière Ewick Lab" class="absolute inset-0 w-full h-full object-cover"/>
+    <div class="absolute inset-0 bg-black/40"></div>
     <div class="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center">
       <div>
-        <h1 class="text-4xl sm:text-6xl font-extrabold text-white neon-glow">
-          Bienvenue dans le Ewick Lab — là où l’IA parle québécois.
-        </h1>
-        <p class="mt-4 text-lg sm:text-2xl text-gray-200">
-          Ici, on fait jaser les machines, on entraîne des modèles, pis on rit un peu en même temps.
-        </p>
+        <h1 class="text-4xl sm:text-6xl font-extrabold text-white neon-glow">Bienvenue dans le Ewick Lab — là où l’IA parle québécois.</h1>
+        <p class="mt-4 text-lg sm:text-2xl text-gray-200">Ici, on fait jaser les machines, on entraîne des modèles, pis on rit un peu en même temps.</p>
         <p class="text-sm mt-2 text-lab-accent">Tout ce que tu vois ici est 100 % réel… ou presque. 😏</p>
       </div>
     </div>
   </section>
 
   <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-16">
-    <!-- Section 1 -->
+
     <section class="section-card p-6 md:p-10 rounded-xl">
       <h2 class="text-3xl font-bold mb-4 text-lab-accent">C'est pas un labo scientifique… mais presque !</h2>
       <div class="lg:grid lg:grid-cols-3 lg:gap-10">
         <div class="lg:col-span-2">
-          <p class="text-lg text-gray-300 mb-6">
-            Ewick Lab, c’est mon terrain de jeu pour expérimenter avec l’intelligence artificielle. J’y bricole des modèles entraînés à comprendre mon humour, ma façon de parler, pis mes animaux préférés.
-          </p>
+          <p class="text-lg text-gray-300 mb-6">Ewick Lab, c’est mon terrain de jeu pour expérimenter avec l’intelligence artificielle. J’y bricole des modèles entraînés à comprendre mon humour, ma façon de parler, pis mes animaux préférés.</p>
           <p class="text-lg font-semibold text-gray-200 mb-4">Tu peux y trouver :</p>
           <ul class="space-y-3 text-gray-300 text-lg">
             <li class="flex items-start"><span class="text-2xl text-lab-accent mr-3">🧠</span><div><strong class="text-white">EdHick GPT</strong> – un chatbot québécois qui te jase comme un chum.</div></li>
             <li class="flex items-start"><span class="text-2xl text-lab-accent mr-3">🧩</span><div><strong class="text-white">Prompt Builder pour Sora</strong> – ton assistant pour générer des vidéos réalistes en deux clics.</div></li>
-            <li class="flex items-start"><span class="text-2xl text-lab-accent mr-3">✨</span><div><strong class="text-white">Légendes QC Générateur</strong> – qui invente des contes urbains bien de chez nous.</div></li>
+            <li class="flex items-start"><span class="text-2xl text-lab-accent mr-3">✨</span><div><strong class="text-white">Légendes QC Générateur</div></li>
             <li class="flex items-start"><span class="text-2xl text-lab-accent mr-3">🗣️</span><div><strong class="text-white">Voix EdHick</strong> – un modèle de voix synthétique québécoise.</div></li>
           </ul>
         </div>
-        <div class="lg:col-span-1 mt-8 lg:mt-0">
-          <!-- Image de section (ta même image, cadrée) -->
-          <img src="https://etropal00.github.io/photo.png"
-               alt="Cerveau robotique avec éclair"
-               class="w-full h-48 object-cover rounded-lg border border-lab-accent/50 shadow-lg">
+        <div class="lg:col-span-1 mt-8 lg:mt-0 flex justify-center items-center">
+          <img src="https://etropal00.github.io/photo.png" alt="Cerveau robotique avec éclair" class="w-full h-48 object-cover rounded-lg border border-lab-accent/50 shadow-lg">
         </div>
       </div>
     </section>
 
-    <!-- Section 2 (chat/Prompt Builder) — inchangée sauf style -->
-    <section class="section-card p-6 md:p-10 rounded-xl">
-      <h2 class="text-3xl font-bold mb-4 text-lab-accent">Parle à EdHick (en version IA)</h2>
-      <p class="text-lg text-gray-300 mb-6">Pose-lui n’importe quelle question. Il peut t'aider à créer des concepts ou simplement te faire rire :</p>
-
-      <div class="mb-10 bg-gray-700 p-6 rounded-lg shadow-xl border border-lab-secondary/50">
-        <h3 class="text-xl font-bold mb-3 text-lab-secondary flex items-center">
-          🧩 Ewick Prompt Builder ✨
-          <span class="ml-2 text-sm text-gray-200 font-normal italic">(Pour Sora/Gemini)</span>
-        </h3>
-        <p class="text-gray-200 mb-4 text-sm">
-          Entre une idée simple (ex: "un chat qui fait du ski nautique"), et EdHick GPT va la transformer en prompt ultra-détaillé et stylé.
-        </p>
-        <textarea id="promptBuilderInput" rows="2" placeholder="Ex: Une poutine qui chante du Céline Dion en lévitant." class="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white focus:ring-2 focus:ring-lab-secondary focus:outline-none"></textarea>
-        <div class="mt-4 text-center">
-          <button onclick="generatePrompt()" id="generatePromptButton" class="button-primary bg-lab-secondary text-gray-900 font-bold py-2 px-6 rounded-full hover:bg-lab-secondary/80 flex items-center justify-center mx-auto" disabled>
-            Générer le Prompt ✨
-          </button>
-        </div>
-        <div id="promptOutput" class="mt-4 p-4 bg-gray-900 rounded-lg text-sm text-lab-secondary italic hidden"></div>
-        <div id="promptLoading" class="hidden text-center mt-4 text-lab-secondary">Chargement du prompt...</div>
-      </div>
-
-      <div class="w-full h-[500px] bg-gray-800 rounded-xl p-4 border-4 border-double border-lab-accent/70 flex flex-col">
-        <div id="chatContainer" class="flex-grow overflow-y-auto space-y-3 p-2">
-          <div class="ai-message chat-message text-sm">
-            Salut l'artiste! Bienvenue dans le Ewick Lab. Qu'est-ce qui t'amène ici ? As-tu une idée de vidéo flyée à me soumettre?
-          </div>
-        </div>
-        <div class="flex space-x-2 pt-4">
-          <input type="text" id="messageInput" placeholder="Entre ton message ici..." class="flex-grow p-3 rounded-l-lg bg-gray-900 border border-lab-accent/50 text-white focus:ring-2 focus:ring-lab-accent focus:outline-none" onkeydown="if(event.key==='Enter') sendMessage()">
-          <button id="sendButton" onclick="sendMessage()" class="bg-lab-accent text-white font-semibold py-3 px-6 rounded-r-lg hover:bg-lab-accent/80 transition duration-300" disabled>Envoyer</button>
-        </div>
-        <div id="chatLoading" class="hidden text-center mt-2 text-lab-accent">EdHick GPT est en train de réfléchir...</div>
-      </div>
+    <!-- Section Messenger -->
+    <section class="section-card p-10 rounded-xl text-center mt-16">
+      <h2 class="text-3xl font-bold mb-4 text-lab-accent">Tu veux jaser avec EdHick ?</h2>
+      <p class="text-lg text-gray-300 mb-6 max-w-2xl mx-auto">
+        Écris-moi directement sur Messenger ! Pour jaser d’IA, d’un projet flyé, ou juste dire allo 👋.
+      </p>
+      <a href="https://m.me/Etropal68" target="_blank" rel="noopener"
+         class="bg-blue-600 text-white font-semibold py-3 px-8 rounded-full shadow-md shadow-blue-500/40 hover:bg-blue-700 transition">
+         💬 Me parler sur Messenger
+      </a>
     </section>
 
-    <!-- Section 3/4/5 inchangées -->
-    <section class="section-card p-6 md:p-10 rounded-xl">
-      <h2 class="text-3xl font-bold mb-4 text-lab-accent">Des projets IA faits à la main (et un peu à la souris)</h2>
-      <!-- … (ton tableau comme avant) … -->
-    </section>
-
-    <section class="section-card p-6 md:p-10 rounded-xl text-center">
-      <h2 class="text-3xl font-bold mb-4 text-lab-accent">Soutiens la recherche québécoise la plus flyée.</h2>
-      <!-- … (CTA) … -->
-    </section>
-
-    <section class="section-card p-6 md:p-10 rounded-xl text-center">
-      <h2 class="text-3xl font-bold mb-4 text-lab-accent">Ewick Lab + tes idées = magie IA.</h2>
-      <!-- … (CTA) … -->
-    </section>
   </main>
 
-  <footer class="text-center mt-12 py-8 border-t border-gray-700/50 text-gray-400">
+  <footer class="text-center mt-20 py-8 border-t border-gray-700/50 text-gray-400">
     <p class="text-sm">© 2025 Ewick Lab – Une division du monde un peu trop curieux d’EdHick.</p>
-    <p class="text-xs mt-1">Powered by Hugging Face, Sora 2, pis un peu de café froid. ☕</p>
+    <p class="text-xs mt-1">Powered by Hugging Face, Sora 2, pis un peu de café froid ☕</p>
   </footer>
-</div>
 
-<script>
-  async function fetchWithBackoff(url, options, retries=3, delay=1000){
-    for (let i=0;i<retries;i++){
-      try{
-        const res = await fetch(url, options);
-        if (res.ok) return res;
-        if (res.status===429 && i<retries-1){ await new Promise(r=>setTimeout(r, delay*Math.pow(2,i))); continue; }
-        throw new Error(`HTTP ${res.status}`);
-      }catch(e){
-        if (i===retries-1) throw e;
-        await new Promise(r=>setTimeout(r, delay*Math.pow(2,i)));
-      }
-    }
-  }
-  const chatContainer=document.getElementById('chatContainer');
-  const messageInput=document.getElementById('messageInput');
-  const sendButton=document.getElementById('sendButton');
-  const chatLoading=document.getElementById('chatLoading');
-  let chatHistory=[];
-  window.onload=()=>{ if(sendButton) sendButton.disabled=false; const b=document.getElementById('generatePromptButton'); if(b) b.disabled=false; };
-  function addMessage(text,isUser){
-    const m=document.createElement('div');
-    m.className=`chat-message text-white text-base ${isUser?'user-message':'ai-message'}`;
-    m.innerHTML=text.replace(/\n/g,'<br>');
-    chatContainer.appendChild(m);
-    chatContainer.scrollTop=chatContainer.scrollHeight;
-  }
-  async function sendMessage(){
-    const userQuery=messageInput.value.trim(); if(!userQuery) return;
-    addMessage(userQuery,true); messageInput.value='';
-    chatHistory.push({role:"user",parts:[{text:userQuery}]});
-    sendButton.disabled=true; chatLoading.classList.remove('hidden');
-    const payload={ contents:chatHistory, tools:[{"google_search":{}}], systemInstruction:{parts:[{text:SYSTEM_INSTRUCTION_EDHICK}]}, };
-    try{
-      const res=await fetchWithBackoff(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-      const data=await res.json(); const c=data.candidates?.[0];
-      if(c?.content?.parts?.[0]?.text){ const t=c.content.parts[0].text; addMessage(t,false); chatHistory.push({role:"model",parts:[{text:t}]}); }
-      else addMessage("Désolé, j'ai pogné un bug ! Peux-tu reformuler ta question ?", false);
-    }catch(e){ console.error(e); addMessage("Oups, mon serveur est parti en sucette. Réessaie dans un moment, mon chum.", false); }
-    finally{ sendButton.disabled=false; chatLoading.classList.add('hidden'); }
-  }
-  async function generatePrompt(){
-    const idea=document.getElementById('promptBuilderInput').value.trim();
-    const out=document.getElementById('promptOutput'); const load=document.getElementById('promptLoading'); const btn=document.getElementById('generatePromptButton');
-    if(!idea){ out.innerText="Veuillez entrer une idée avant de générer le prompt."; out.classList.remove('hidden'); return; }
-    btn.disabled=true; out.classList.add('hidden'); load.classList.remove('hidden');
-    const q=`Détaille et améliore cette idée pour créer un prompt ultra-réaliste de type Sora ou Gemini. Ajoute des détails de caméra, d'éclairage, de texture et de style visuel. Fais-le de manière créative et amusante, en gardant l'esprit d'EdHick, mais produis le résultat final en format de prompt technique (une seule ligne, en anglais, sans introductions ni explications, pour une IA générative). L'idée est : "${idea}"`;
-    const payload={ contents:[{parts:[{text:q}]}], systemInstruction:{parts:[{text:"Tu es un assistant expert en 'Prompt Engineering' pour les modèles de génération de vidéo (Sora) et d'image (Gemini). Ton but est de transformer une idée simple en un prompt de production détaillé, ultra-réaliste, en une seule phrase en anglais, et d'y injecter un style cinématographique et humoristique."}]} };
-    try{
-      const res=await fetchWithBackoff(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-      const data=await res.json(); const txt=data.candidates?.[0]?.content?.parts?.[0]?.text || "Erreur de génération du prompt.";
-      out.innerText=txt.trim(); out.classList.remove('hidden');
-    }catch(e){ console.error(e); out.innerText="Désolé, le Prompt Builder a fait un 404. Essaie encore, champion."; out.classList.remove('hidden'); }
-    finally{ btn.disabled=false; load.classList.add('hidden'); }
-  }
-</script>
+  <!-- Hint tooltip (appears once) -->
+  <div class="hint" id="hint">Besoin d’infos ? Écris-moi 💬</div>
+
+  <!-- Bulle Messenger flottante avec pulse -->
+  <a href="https://m.me/Etropal68" target="_blank" rel="noopener"
+     class="fixed bottom-6 right-6 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg transition bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300/40"
+     aria-label="Contacter via Messenger">
+    <span class="pulse-ring" aria-hidden="true"></span>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" class="w-8 h-8 relative">
+      <path d="M8 0C3.6 0 0 3.25 0 7.25c0 2.3 1.1 4.36 2.9 5.71V16l2.6-1.44c.8.22 1.6.34 2.5.34 4.4 0 8-3.25 8-7.25S12.4 0 8 0zm.8 9.8L6.8 8.25 3.7 9.8l3.5-3.71 1.4 1.55 3.1-1.55L8.8 9.8z"/>
+    </svg>
+  </a>
+
+  <script>
+    // Hide the hint after first interaction so it doesn't annoy visitors
+    const hint = document.getElementById('hint');
+    const bubble = document.querySelector('a[aria-label="Contacter via Messenger"]');
+    function hideHint(){ if(hint){ hint.style.display = 'none'; } }
+    if(bubble){ bubble.addEventListener('mouseenter', hideHint); bubble.addEventListener('click', hideHint); }
+    // Auto-hide after a few seconds as fallback
+    setTimeout(hideHint, 6000);
+  </script>
 </body>
 </html>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ewick Lab - Là où l'IA parle québécois</title>
-    <!-- Chargement de Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        // Clé API vide par défaut. Sera remplie par l'environnement Canvas.
-        const apiKey = "";
-        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-        const SYSTEM_INSTRUCTION_EDHICK = "Tu es EdHick GPT, l'intelligence artificielle québécoise et humoristique du Ewick Lab. Ton ton est amical, décontracté, et tu utilises des expressions québécoises. Tu es brillant et créatif. Aide l'utilisateur à générer des idées de contenu, des blagues, ou des concepts créatifs pour la vidéo ou l'image (comme Sora ou Gemini). Sois concis, drôle, et n'hésite pas à incorporer des éléments locaux du Québec dans tes réponses. Commence toujours ta réponse par une salutation en québécois (ex: 'Salut l'ami!', 'Hey l'artiste!').";
-    </script>
-    <!-- Configuration de Tailwind pour une police moderne et des couleurs thématiques -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'lab-dark': '#0f172a', // slate-900
-                        'lab-accent': '#3b82f6', // blue-500
-                        'lab-secondary': '#10b981', // emerald-500
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                }
-            }
-        }
-    </script>
-    <style>
-        /* Style général pour une ambiance Lab */
-        body { font-family: 'Inter', sans-serif; }
-        .section-card {
-            background-color: #1e293b; /* slate-800 */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .section-card:hover {
-            box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.5), 0 8px 10px -6px rgba(59, 130, 246, 0.5);
-            transform: translateY(-4px);
-        }
-        .neon-glow { text-shadow: 0 0 5px #3b82f6, 0 0 10px #3b82f6, 0 0 15px #3b82f6; }
-        .button-primary { transition: background-color 0.3s, transform 0.1s, box-shadow 0.3s; }
-        .button-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(59, 130, 246, 0.6); }
-        .chat-message { max-width: 90%; padding: 10px 15px; border-radius: 18px; margin-bottom: 10px; word-wrap: break-word; }
-        .user-message { background-color: #3b82f6; align-self: flex-end; margin-left: auto; }
-        .ai-message { background-color: #475569; align-self: flex-start; margin-right: auto; }
-    </style>
-</head>
-<body class="bg-lab-dark text-gray-100 min-h-screen">
+"""
 
-    <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-
-        <!-- Header -->
-        <header class="text-center py-12 mb-10 border-b-2 border-lab-accent/50">
-            <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white neon-glow">
-                Bienvenue dans le Ewick Lab — là où l’IA parle québécois.
-            </h1>
-            <p class="mt-4 text-xl sm:text-2xl text-gray-400">
-                Ici, on fait jaser les machines, on entraîne des modèles, pis on rit un peu en même temps.
-            </p>
-            <p class="text-sm mt-2 text-lab-accent">
-                Tout ce que tu vois ici est 100 % réel… ou presque. <span class="text-2xl">😏</span>
-            </p>
-        </header>
-
-        <!-- Contenu Principal -->
-        <main class="space-y-16">
-
-            <!-- Section 1 — “Le concept” -->
-            <section class="section-card p-6 md:p-10 rounded-xl">
-                <h2 class="text-3xl font-bold mb-4 text-lab-accent">
-                    C'est pas un labo scientifique… mais presque !
-                </h2>
-                <div class="lg:grid lg:grid-cols-3 lg:gap-10">
-                    <div class="lg:col-span-2">
-                        <p class="text-lg text-gray-300 mb-6">
-                            Ewick Lab, c’est mon terrain de jeu pour expérimenter avec l’intelligence artificielle. J’y bricole des modèles entraînés à comprendre mon humour, ma façon de parler, pis mes animaux préférés.
-                        </p>
-                        <p class="text-lg font-semibold text-gray-200 mb-4">
-                            Tu peux y trouver :
-                        </p>
-                        <ul class="space-y-3 text-gray-300 text-lg">
-                            <li class="flex items-start">
-                                <span class="text-2xl text-lab-accent mr-3">🧠</span>
-                                <div><strong class="text-white">EdHick GPT</strong> – un chatbot québécois qui te jase comme un chum.</div>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-2xl text-lab-accent mr-3">🧩</span>
-                                <div><strong class="text-white">Prompt Builder pour Sora</strong> – ton assistant pour générer des vidéos réalistes en deux clics.</div>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-2xl text-lab-accent mr-3">✨</span>
-                                <div><strong class="text-white">Légendes QC Générateur</strong> – qui invente des contes urbains bien de chez nous.</div>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-2xl text-lab-accent mr-3">🗣️</span>
-                                <div><strong class="text-white">Voix EdHick</strong> – un modèle de voix synthétique québécoise.</div>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="lg:col-span-1 mt-8 lg:mt-0 flex justify-center items-center">
-                        <!-- Image intégrée -->
-                        <img
-                          src="https://etropal00.github.io/photo.png"
-                          alt="Cerveau robotique avec éclair"
-                          class="w-full h-48 object-cover rounded-lg border border-lab-accent/50 shadow-lg">
-                    </div>
-                </div>
-            </section>
-
-            <!-- Section 2 — “Tester EdHick GPT (IA en direct)” -->
-            <section class="section-card p-6 md:p-10 rounded-xl">
-                <h2 class="text-3xl font-bold mb-4 text-lab-accent">
-                    Parle à EdHick (en version IA)
-                </h2>
-                <p class="text-lg text-gray-300 mb-6">
-                    Pose-lui n’importe quelle question. Il peut t'aider à créer des concepts ou simplement te faire rire :
-                </p>
-                
-                <!-- Sous-section : Prompt Builder Gemini (NOUVEAU FEATURE) -->
-                <div class="mb-10 bg-gray-700 p-6 rounded-lg shadow-xl border border-lab-secondary/50">
-                    <h3 class="text-xl font-bold mb-3 text-lab-secondary flex items-center">
-                        🧩 Ewick Prompt Builder ✨
-                        <span class="ml-2 text-sm text-gray-400 font-normal italic">(Pour Sora/Gemini)</span>
-                    </h3>
-                    <p class="text-gray-300 mb-4 text-sm">
-                        Entre une idée simple (ex: "un chat qui fait du ski nautique"), et EdHick GPT va la transformer en prompt ultra-détaillé et stylé.
-                    </p>
-                    <textarea id="promptBuilderInput" rows="2" placeholder="Ex: Une poutine qui chante du Céline Dion en lévitant." class="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white focus:ring-2 focus:ring-lab-secondary focus:outline-none"></textarea>
-                    <div class="mt-4 text-center">
-                         <button onclick="generatePrompt()" id="generatePromptButton" class="button-primary bg-lab-secondary text-gray-900 font-bold py-2 px-6 rounded-full hover:bg-lab-secondary/80 flex items-center justify-center mx-auto" disabled>
-                            Générer le Prompt ✨
-                        </button>
-                    </div>
-                    <div id="promptOutput" class="mt-4 p-4 bg-gray-900 rounded-lg text-sm text-lab-secondary italic hidden"></div>
-                    <div id="promptLoading" class="hidden text-center mt-4 text-lab-secondary">Chargement du prompt...</div>
-                </div>
-                
-                <!-- Chatbox EdHick GPT (INTEGRATION GEMINI) -->
-                <div class="w-full h-[500px] bg-gray-800 rounded-xl p-4 border-4 border-double border-lab-accent/70 flex flex-col">
-                    <div id="chatContainer" class="flex-grow overflow-y-auto space-y-3 p-2 custom-scrollbar">
-                        <div class="ai-message chat-message text-sm">
-                            Salut l'artiste! Bienvenue dans le Ewick Lab. Qu'est-ce qui t'amène ici ? As-tu une idée de vidéo flyée à me soumettre?
-                        </div>
-                    </div>
-                    
-                    <div class="flex space-x-2 pt-4">
-                        <input type="text" id="messageInput" placeholder="Entre ton message ici..." class="flex-grow p-3 rounded-l-lg bg-gray-900 border border-lab-accent/50 text-white focus:ring-2 focus:ring-lab-accent focus:outline-none" aria-label="Zone de saisie du chat IA" onkeydown="if(event.key === 'Enter') sendMessage()">
-                        <button id="sendButton" onclick="sendMessage()" class="bg-lab-accent text-white font-semibold py-3 px-6 rounded-r-lg hover:bg-lab-accent/80 transition duration-300" disabled>Envoyer</button>
-                    </div>
-                    <div id="chatLoading" class="hidden text-center mt-2 text-lab-accent">EdHick GPT est en train de réfléchir...</div>
-                </div>
-                
-                <div class="text-center mt-8">
-                    <span class="inline-block text-lg text-gray-400">
-                        🧠 EdHick GPT propulsé par Gemini 2.5 Flash
-                    </span>
-                </div>
-            </section>
-
-            <!-- Section 3 — “Mes modèles IA maison” -->
-            <section class="section-card p-6 md:p-10 rounded-xl">
-                <h2 class="text-3xl font-bold mb-4 text-lab-accent">
-                    Des projets IA faits à la main (et un peu à la souris)
-                </h2>
-                
-                <div class="overflow-x-auto">
-                    <table class="min-w-full table-auto border-collapse">
-                        <thead class="text-xs uppercase bg-gray-700 text-gray-300">
-                            <tr class="hidden md:table-row">
-                                <th class="py-3 px-6 text-left rounded-tl-lg">Modèle</th>
-                                <th class="py-3 px-6 text-left">Description courte</th>
-                                <th class="py-3 px-6 text-center rounded-tr-lg">Accès</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-700 text-gray-300">
-                            <tr class="grid grid-cols-1 md:table-row text-sm py-4 md:py-0 border-b border-gray-700">
-                                <td class="py-2 px-6 font-semibold text-white md:table-cell" data-label="Modèle">EdHick GPT</td>
-                                <td class="py-2 px-6 md:table-cell" data-label="Description">Le cerveau québécois d’Ewick.ca – il comprend ton humour et t’aide à créer.</td>
-                                <td class="py-2 px-6 text-center md:table-cell" data-label="Accès">
-                                    <a href="#" class="text-lab-secondary font-medium hover:text-lab-secondary/70">[Tester ci-haut]</a>
-                                </td>
-                            </tr>
-                            <tr class="grid grid-cols-1 md:table-row text-sm py-4 md:py-0 border-b border-gray-700">
-                                <td class="py-2 px-6 font-semibold text-white md:table-cell" data-label="Modèle">Ewick Prompt Builder</td>
-                                <td class="py-2 px-6 md:table-cell" data-label="Description">Génère des prompts Sora 2 ou Gemini ultra réalistes.</td>
-                                <td class="py-2 px-6 text-center md:table-cell" data-label="Accès">
-                                    <a href="#" class="text-lab-secondary font-medium hover:text-lab-secondary/70">[Essayer ci-haut]</a>
-                                </td>
-                            </tr>
-                            <tr class="grid grid-cols-1 md:table-row text-sm py-4 md:py-0 border-b border-gray-700">
-                                <td class="py-2 px-6 font-semibold text-white md:table-cell" data-label="Modèle">Légendes QC Générateur</td>
-                                <td class="py-2 px-6 md:table-cell" data-label="Description">Invente des histoires folles et des contes urbains ancrés au Québec.</td>
-                                <td class="py-2 px-6 text-center md:table-cell" data-label="Accès">
-                                    <a href="#" class="text-lab-secondary font-medium hover:text-lab-secondary/70">[Essayer]</a>
-                                </td>
-                            </tr>
-                            <tr class="grid grid-cols-1 md:table-row text-sm py-4 md:py-0">
-                                <td class="py-2 px-6 font-semibold text-white md:table-cell" data-label="Modèle">Voix EdHick</td>
-                                <td class="py-2 px-6 md:table-cell" data-label="Description">Reproduit ma voix québécoise (projet privé).</td>
-                                <td class="py-2 px-6 text-center md:table-cell" data-label="Accès">
-                                    <span class="text-gray-500 italic">[En développement]</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
-            <!-- Section 4 — “Deviens membre du Ewick Lab” -->
-            <section class="section-card p-6 md:p-10 rounded-xl text-center">
-                <h2 class="text-3xl font-bold mb-4 text-lab-accent">
-                    Soutiens la recherche québécoise la plus flyée.
-                </h2>
-                <p class="text-lg text-gray-300 mb-6 max-w-2xl mx-auto">
-                    Tu veux m’aider à entraîner les prochains modèles ? Chaque abonné aide à financer le matériel, le stockage et la création de contenus IA.
-                </p>
-                
-                <p class="text-lg font-semibold text-gray-200 mb-8 max-w-xl mx-auto space-y-2">
-                    En échange, t’as accès à :
-                    <span class="block text-lab-secondary">Des démos exclusives</span>
-                    <span class="block text-lab-secondary">Des aperçus de mes vidéos Sora avant leur sortie</span>
-                    <span class="block text-lab-secondary">Pis parfois même… des bloopers. 😅</span>
-                </p>
-
-                <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                    <a href="#" class="button-primary bg-lab-accent text-white font-bold py-3 px-8 rounded-full shadow-md shadow-lab-accent/40 hover:bg-lab-accent/80">
-                        🧪 Devenir membre (via Hugging Face Pro)
-                    </a>
-                    <a href="#" class="button-primary bg-lab-secondary text-gray-900 font-bold py-3 px-8 rounded-full shadow-md shadow-lab-secondary/40 hover:bg-lab-secondary/80">
-                        ☕ M'offrir un café (BuyMeACoffee)
-                    </a>
-                </div>
-            </section>
-            
-            <!-- Section 5 — “Intégration créative” -->
-            <section class="section-card p-6 md:p-10 rounded-xl text-center">
-                <h2 class="text-3xl font-bold mb-4 text-lab-accent">
-                    Ewick Lab + tes idées = magie IA.
-                </h2>
-                <p class="text-lg text-gray-300 mb-8 max-w-3xl mx-auto">
-                    Tu veux que je t’aide à créer ton propre modèle IA ? Ou que je t’entraîne à faire des prompts comme un pro ? Contacte-moi — je fais de la création sur mesure avec toi ou pour toi.
-                </p>
-                <a href="#" class="button-primary bg-gray-600 text-white font-bold py-3 px-10 rounded-full shadow-md shadow-gray-600/40 hover:bg-gray-700">
-                    📩 Collaborer avec EdHick
-                </a>
-            </section>
-        </main>
-
-        <!-- Bas de page (Footer du Lab) -->
-        <footer class="text-center mt-20 py-8 border-t border-gray-700/50 text-gray-400">
-            <p class="text-sm">
-                © 2025 Ewick Lab – Une division du monde un peu trop curieux d’EdHick.
-            </p>
-            <p class="text-xs mt-1">
-                Powered by Hugging Face, Sora 2, pis un peu de café froid. ☕
-            </p>
-        </footer>
-
-    </div>
-
-    <script>
-        async function fetchWithBackoff(url, options, retries = 3, delay = 1000) {
-            for (let i = 0; i < retries; i++) {
-                try {
-                    const response = await fetch(url, options);
-                    if (response.ok) return response;
-                    if (response.status === 429 && i < retries - 1) {
-                        await new Promise(r => setTimeout(r, delay * Math.pow(2, i)));
-                        continue;
-                    }
-                    throw new Error(`Erreur HTTP: ${response.status} - ${response.statusText}`);
-                } catch (e) {
-                    if (i === retries - 1) throw e;
-                    await new Promise(r => setTimeout(r, delay * Math.pow(2, i)));
-                }
-            }
-        }
-
-        const chatContainer = document.getElementById('chatContainer');
-        const messageInput  = document.getElementById('messageInput');
-        const sendButton    = document.getElementById('sendButton');
-        const chatLoading   = document.getElementById('chatLoading');
-        let chatHistory = [];
-
-        window.onload = function() {
-            sendButton.disabled = false;
-            const btn = document.getElementById('generatePromptButton');
-            if (btn) btn.disabled = false;
-        };
-
-        function addMessage(text, isUser) {
-            const m = document.createElement('div');
-            m.className = `chat-message text-white text-base ${isUser ? 'user-message' : 'ai-message'}`;
-            m.innerHTML = text.replace(/\n/g, '<br>');
-            chatContainer.appendChild(m);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        async function sendMessage() {
-            const userQuery = messageInput.value.trim();
-            if (!userQuery) return;
-
-            addMessage(userQuery, true);
-            messageInput.value = '';
-            chatHistory.push({ role: "user", parts: [{ text: userQuery }] });
-
-            sendButton.disabled = true;
-            chatLoading.classList.remove('hidden');
-
-            const payload = {
-                contents: chatHistory,
-                tools: [{ "google_search": {} }],
-                systemInstruction: { parts: [{ text: SYSTEM_INSTRUCTION_EDHICK }] },
-            };
-
-            try {
-                const response = await fetchWithBackoff(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const result = await response.json();
-                const candidate = result.candidates?.[0];
-                if (candidate && candidate.content?.parts?.[0]?.text) {
-                    const aiText = candidate.content.parts[0].text;
-                    addMessage(aiText, false);
-                    chatHistory.push({ role: "model", parts: [{ text: aiText }] });
-                } else {
-                    addMessage("Désolé, j'ai pogné un bug ! Peux-tu reformuler ta question ?", false);
-                }
-            } catch (err) {
-                console.error("Erreur Gemini API:", err);
-                addMessage("Oups, mon serveur est parti en sucette. Réessaye dans un moment, mon chum.", false);
-            } finally {
-                sendButton.disabled = false;
-                chatLoading.classList.add('hidden');
-            }
-        }
-
-        async function generatePrompt() {
-            const idea = document.getElementById('promptBuilderInput').value.trim();
-            const promptOutput  = document.getElementById('promptOutput');
-            const promptLoading = document.getElementById('promptLoading');
-            const button        = document.getElementById('generatePromptButton');
-
-            if (!idea) {
-                promptOutput.innerText = "Veuillez entrer une idée avant de générer le prompt.";
-                promptOutput.classList.remove('hidden');
-                return;
-            }
-
-            button.disabled = true;
-            promptOutput.classList.add('hidden');
-            promptLoading.classList.remove('hidden');
-
-            const userQuery = `Détaille et améliore cette idée pour créer un prompt ultra-réaliste de type Sora ou Gemini. Ajoute des détails de caméra, d'éclairage, de texture et de style visuel. Fais-le de manière créative et amusante, en gardant l'esprit d'EdHick, mais produis le résultat final en format de prompt technique (une seule ligne, en anglais, sans introductions ni explications, pour une IA générative). L'idée est : "${idea}"`;
-
-            const payload = {
-                contents: [{ parts: [{ text: userQuery }] }],
-                systemInstruction: { parts: [{ text: "Tu es un assistant expert en 'Prompt Engineering' pour les modèles de génération de vidéo (Sora) et d'image (Gemini). Ton but est de transformer une idée simple en un prompt de production détaillé, ultra-réaliste, en une seule phrase en anglais, et d'y injecter un style cinématographique et humoristique." }] },
-            };
-
-            try {
-                const response = await fetchWithBackoff(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const result = await response.json();
-                const generatedText = result.candidates?.[0]?.content?.parts?.[0]?.text || "Erreur de génération du prompt.";
-                promptOutput.innerText = generatedText.trim();
-                promptOutput.classList.remove('hidden');
-            } catch (e) {
-                console.error("Erreur Prompt Builder API:", e);
-                promptOutput.innerText = "Désolé, le Prompt Builder a fait un 404. Essaie encore, champion.";
-                promptOutput.classList.remove('hidden');
-            } finally {
-                button.disabled = false;
-                promptLoading.classList.add('hidden');
-            }
-        }
-    </script>
-</body>
-</html>
-
+p = Path("/mnt/data/index-animated-messenger.html")
+p.write_text(html_animated, encoding="utf-8")
+p
