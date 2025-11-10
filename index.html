@@ -31,9 +31,7 @@
     </script>
     <style>
         /* Style général pour une ambiance Lab */
-        body {
-            font-family: 'Inter', sans-serif;
-        }
+        body { font-family: 'Inter', sans-serif; }
         .section-card {
             background-color: #1e293b; /* slate-800 */
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
@@ -43,33 +41,12 @@
             box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.5), 0 8px 10px -6px rgba(59, 130, 246, 0.5);
             transform: translateY(-4px);
         }
-        .neon-glow {
-            text-shadow: 0 0 5px #3b82f6, 0 0 10px #3b82f6, 0 0 15px #3b82f6;
-        }
-        .button-primary {
-            transition: background-color 0.3s, transform 0.1s, box-shadow 0.3s;
-        }
-        .button-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.6);
-        }
-        .chat-message {
-            max-width: 90%;
-            padding: 10px 15px;
-            border-radius: 18px;
-            margin-bottom: 10px;
-            word-wrap: break-word;
-        }
-        .user-message {
-            background-color: #3b82f6; /* lab-accent */
-            align-self: flex-end;
-            margin-left: auto;
-        }
-        .ai-message {
-            background-color: #475569; /* slate-600 */
-            align-self: flex-start;
-            margin-right: auto;
-        }
+        .neon-glow { text-shadow: 0 0 5px #3b82f6, 0 0 10px #3b82f6, 0 0 15px #3b82f6; }
+        .button-primary { transition: background-color 0.3s, transform 0.1s, box-shadow 0.3s; }
+        .button-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(59, 130, 246, 0.6); }
+        .chat-message { max-width: 90%; padding: 10px 15px; border-radius: 18px; margin-bottom: 10px; word-wrap: break-word; }
+        .user-message { background-color: #3b82f6; align-self: flex-end; margin-left: auto; }
+        .ai-message { background-color: #475569; align-self: flex-start; margin-right: auto; }
     </style>
 </head>
 <body class="bg-lab-dark text-gray-100 min-h-screen">
@@ -125,12 +102,11 @@
                         </ul>
                     </div>
                     <div class="lg:col-span-1 mt-8 lg:mt-0 flex justify-center items-center">
-                        <!-- Image Placeholder for lab concept -->
-                        <div class="w-full h-48 bg-gray-700 rounded-lg flex items-center justify-center border border-lab-accent/50">
-                            <span class="text-gray-400 italic">
-                                https://etropal00.github.io/photo.png
-                            </span>
-                        </div>
+                        <!-- Image intégrée -->
+                        <img
+                          src="https://etropal00.github.io/photo.png"
+                          alt="Cerveau robotique avec éclair"
+                          class="w-full h-48 object-cover rounded-lg border border-lab-accent/50 shadow-lg">
                     </div>
                 </div>
             </section>
@@ -159,18 +135,13 @@
                             Générer le Prompt ✨
                         </button>
                     </div>
-                    <div id="promptOutput" class="mt-4 p-4 bg-gray-900 rounded-lg text-sm text-lab-secondary italic hidden">
-                        <!-- Le prompt généré s'affichera ici -->
-                    </div>
-                    <div id="promptLoading" class="hidden text-center mt-4 text-lab-secondary">
-                        Chargement du prompt...
-                    </div>
+                    <div id="promptOutput" class="mt-4 p-4 bg-gray-900 rounded-lg text-sm text-lab-secondary italic hidden"></div>
+                    <div id="promptLoading" class="hidden text-center mt-4 text-lab-secondary">Chargement du prompt...</div>
                 </div>
                 
                 <!-- Chatbox EdHick GPT (INTEGRATION GEMINI) -->
                 <div class="w-full h-[500px] bg-gray-800 rounded-xl p-4 border-4 border-double border-lab-accent/70 flex flex-col">
                     <div id="chatContainer" class="flex-grow overflow-y-auto space-y-3 p-2 custom-scrollbar">
-                        <!-- Messages s'affichaient ici -->
                         <div class="ai-message chat-message text-sm">
                             Salut l'artiste! Bienvenue dans le Ewick Lab. Qu'est-ce qui t'amène ici ? As-tu une idée de vidéo flyée à me soumettre?
                         </div>
@@ -178,13 +149,9 @@
                     
                     <div class="flex space-x-2 pt-4">
                         <input type="text" id="messageInput" placeholder="Entre ton message ici..." class="flex-grow p-3 rounded-l-lg bg-gray-900 border border-lab-accent/50 text-white focus:ring-2 focus:ring-lab-accent focus:outline-none" aria-label="Zone de saisie du chat IA" onkeydown="if(event.key === 'Enter') sendMessage()">
-                        <button id="sendButton" onclick="sendMessage()" class="bg-lab-accent text-white font-semibold py-3 px-6 rounded-r-lg hover:bg-lab-accent/80 transition duration-300" disabled>
-                            Envoyer
-                        </button>
+                        <button id="sendButton" onclick="sendMessage()" class="bg-lab-accent text-white font-semibold py-3 px-6 rounded-r-lg hover:bg-lab-accent/80 transition duration-300" disabled>Envoyer</button>
                     </div>
-                    <div id="chatLoading" class="hidden text-center mt-2 text-lab-accent">
-                        EdHick GPT est en train de réfléchir...
-                    </div>
+                    <div id="chatLoading" class="hidden text-center mt-2 text-lab-accent">EdHick GPT est en train de réfléchir...</div>
                 </div>
                 
                 <div class="text-center mt-8">
@@ -200,7 +167,6 @@
                     Des projets IA faits à la main (et un peu à la souris)
                 </h2>
                 
-                <!-- Table des modèles (utilisation de la grille Tailwind pour la responsivité) -->
                 <div class="overflow-x-auto">
                     <table class="min-w-full table-auto border-collapse">
                         <thead class="text-xs uppercase bg-gray-700 text-gray-300">
@@ -211,7 +177,6 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-700 text-gray-300">
-                            <!-- EdHick GPT -->
                             <tr class="grid grid-cols-1 md:table-row text-sm py-4 md:py-0 border-b border-gray-700">
                                 <td class="py-2 px-6 font-semibold text-white md:table-cell" data-label="Modèle">EdHick GPT</td>
                                 <td class="py-2 px-6 md:table-cell" data-label="Description">Le cerveau québécois d’Ewick.ca – il comprend ton humour et t’aide à créer.</td>
@@ -219,7 +184,6 @@
                                     <a href="#" class="text-lab-secondary font-medium hover:text-lab-secondary/70">[Tester ci-haut]</a>
                                 </td>
                             </tr>
-                            <!-- Ewick Prompt Builder -->
                             <tr class="grid grid-cols-1 md:table-row text-sm py-4 md:py-0 border-b border-gray-700">
                                 <td class="py-2 px-6 font-semibold text-white md:table-cell" data-label="Modèle">Ewick Prompt Builder</td>
                                 <td class="py-2 px-6 md:table-cell" data-label="Description">Génère des prompts Sora 2 ou Gemini ultra réalistes.</td>
@@ -227,7 +191,6 @@
                                     <a href="#" class="text-lab-secondary font-medium hover:text-lab-secondary/70">[Essayer ci-haut]</a>
                                 </td>
                             </tr>
-                            <!-- Légendes QC Générateur (NOUVEAU MODÈLE) -->
                             <tr class="grid grid-cols-1 md:table-row text-sm py-4 md:py-0 border-b border-gray-700">
                                 <td class="py-2 px-6 font-semibold text-white md:table-cell" data-label="Modèle">Légendes QC Générateur</td>
                                 <td class="py-2 px-6 md:table-cell" data-label="Description">Invente des histoires folles et des contes urbains ancrés au Québec.</td>
@@ -235,7 +198,6 @@
                                     <a href="#" class="text-lab-secondary font-medium hover:text-lab-secondary/70">[Essayer]</a>
                                 </td>
                             </tr>
-                            <!-- Voix EdHick -->
                             <tr class="grid grid-cols-1 md:table-row text-sm py-4 md:py-0">
                                 <td class="py-2 px-6 font-semibold text-white md:table-cell" data-label="Modèle">Voix EdHick</td>
                                 <td class="py-2 px-6 md:table-cell" data-label="Description">Reproduit ma voix québécoise (projet privé).</td>
@@ -301,55 +263,49 @@
     </div>
 
     <script>
-        // Fonction d'aide pour l'Exponential Backoff
         async function fetchWithBackoff(url, options, retries = 3, delay = 1000) {
             for (let i = 0; i < retries; i++) {
                 try {
                     const response = await fetch(url, options);
-                    if (response.ok) {
-                        return response;
-                    }
-                    if (response.status === 429 && i < retries - 1) { // Too Many Requests
-                        await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
+                    if (response.ok) return response;
+                    if (response.status === 429 && i < retries - 1) {
+                        await new Promise(r => setTimeout(r, delay * Math.pow(2, i)));
                         continue;
                     }
                     throw new Error(`Erreur HTTP: ${response.status} - ${response.statusText}`);
-                } catch (error) {
-                    if (i === retries - 1) throw error;
-                    await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
+                } catch (e) {
+                    if (i === retries - 1) throw e;
+                    await new Promise(r => setTimeout(r, delay * Math.pow(2, i)));
                 }
             }
         }
 
-        // --- EdHick GPT Chat Logic ---
         const chatContainer = document.getElementById('chatContainer');
-        const messageInput = document.getElementById('messageInput');
-        const sendButton = document.getElementById('sendButton');
-        const chatLoading = document.getElementById('chatLoading');
+        const messageInput  = document.getElementById('messageInput');
+        const sendButton    = document.getElementById('sendButton');
+        const chatLoading   = document.getElementById('chatLoading');
         let chatHistory = [];
 
-        // Habilite les boutons lorsque l'API Key est détectée (même si vide, l'environnement la fournit)
         window.onload = function() {
             sendButton.disabled = false;
-            document.getElementById('generatePromptButton').disabled = false;
+            const btn = document.getElementById('generatePromptButton');
+            if (btn) btn.disabled = false;
         };
 
         function addMessage(text, isUser) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `chat-message text-white text-base ${isUser ? 'user-message' : 'ai-message'}`;
-            messageDiv.innerHTML = text.replace(/\n/g, '<br>'); // Remplace les retours à la ligne par <br>
-            chatContainer.appendChild(messageDiv);
+            const m = document.createElement('div');
+            m.className = `chat-message text-white text-base ${isUser ? 'user-message' : 'ai-message'}`;
+            m.innerHTML = text.replace(/\n/g, '<br>');
+            chatContainer.appendChild(m);
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
         async function sendMessage() {
             const userQuery = messageInput.value.trim();
-            if (userQuery === "") return;
+            if (!userQuery) return;
 
             addMessage(userQuery, true);
             messageInput.value = '';
-            
-            // Ajouter à l'historique pour la conversation
             chatHistory.push({ role: "user", parts: [{ text: userQuery }] });
 
             sendButton.disabled = true;
@@ -357,10 +313,8 @@
 
             const payload = {
                 contents: chatHistory,
-                tools: [{ "google_search": {} }], // Utilisation de la recherche Google pour le grounding
-                systemInstruction: {
-                    parts: [{ text: SYSTEM_INSTRUCTION_EDHICK }]
-                },
+                tools: [{ "google_search": {} }],
+                systemInstruction: { parts: [{ text: SYSTEM_INSTRUCTION_EDHICK }] },
             };
 
             try {
@@ -369,10 +323,8 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-
                 const result = await response.json();
                 const candidate = result.candidates?.[0];
-
                 if (candidate && candidate.content?.parts?.[0]?.text) {
                     const aiText = candidate.content.parts[0].text;
                     addMessage(aiText, false);
@@ -380,9 +332,8 @@
                 } else {
                     addMessage("Désolé, j'ai pogné un bug ! Peux-tu reformuler ta question ?", false);
                 }
-
-            } catch (error) {
-                console.error("Erreur Gemini API:", error);
+            } catch (err) {
+                console.error("Erreur Gemini API:", err);
                 addMessage("Oups, mon serveur est parti en sucette. Réessaye dans un moment, mon chum.", false);
             } finally {
                 sendButton.disabled = false;
@@ -390,12 +341,11 @@
             }
         }
 
-        // --- Prompt Builder Logic ---
         async function generatePrompt() {
             const idea = document.getElementById('promptBuilderInput').value.trim();
-            const promptOutput = document.getElementById('promptOutput');
+            const promptOutput  = document.getElementById('promptOutput');
             const promptLoading = document.getElementById('promptLoading');
-            const button = document.getElementById('generatePromptButton');
+            const button        = document.getElementById('generatePromptButton');
 
             if (!idea) {
                 promptOutput.innerText = "Veuillez entrer une idée avant de générer le prompt.";
@@ -411,9 +361,7 @@
 
             const payload = {
                 contents: [{ parts: [{ text: userQuery }] }],
-                systemInstruction: {
-                    parts: [{ text: "Tu es un assistant expert en 'Prompt Engineering' pour les modèles de génération de vidéo (Sora) et d'image (Gemini). Ton but est de transformer une idée simple en un prompt de production détaillé, ultra-réaliste, en une seule phrase en anglais, et d'y injecter un style cinématographique et humoristique." }]
-                },
+                systemInstruction: { parts: [{ text: "Tu es un assistant expert en 'Prompt Engineering' pour les modèles de génération de vidéo (Sora) et d'image (Gemini). Ton but est de transformer une idée simple en un prompt de production détaillé, ultra-réaliste, en une seule phrase en anglais, et d'y injecter un style cinématographique et humoristique." }] },
             };
 
             try {
@@ -422,15 +370,12 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-
                 const result = await response.json();
                 const generatedText = result.candidates?.[0]?.content?.parts?.[0]?.text || "Erreur de génération du prompt.";
-
                 promptOutput.innerText = generatedText.trim();
                 promptOutput.classList.remove('hidden');
-
-            } catch (error) {
-                console.error("Erreur Prompt Builder API:", error);
+            } catch (e) {
+                console.error("Erreur Prompt Builder API:", e);
                 promptOutput.innerText = "Désolé, le Prompt Builder a fait un 404. Essaie encore, champion.";
                 promptOutput.classList.remove('hidden');
             } finally {
@@ -441,5 +386,3 @@
     </script>
 </body>
 </html>
-
-
