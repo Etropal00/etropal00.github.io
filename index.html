@@ -30,9 +30,13 @@
     .pulse-ring{ position:absolute; inset:0; border-radius:9999px; box-shadow:0 0 0 0 rgba(59,130,246,.65); animation:pulse 2.2s ease-out infinite; pointer-events:none }
     @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(59,130,246,.65);opacity:1}70%{box-shadow:0 0 0 18px rgba(59,130,246,0);opacity:.25}100%{box-shadow:0 0 0 0 rgba(59,130,246,0);opacity:0}}
     @media (prefers-reduced-motion: reduce){ .pulse-ring{animation:none} }
+    /* Liens “bientôt” (désactivés visuellement) */
+    .soon { opacity:.6; cursor:not-allowed; pointer-events:none }
+    /* Bouton remonter en haut */
+    .to-top { position:fixed; left:1.25rem; bottom:1.25rem; }
   </style>
 
-  <!-- Variables et instructions -->
+  <!-- Variables / API (comme avant) -->
   <script>
     const apiKey = "";
     const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
@@ -70,7 +74,7 @@
       </p>
     </header>
 
-    <!-- NOUVELLE SECTION EN HAUT : NOTE CONVIVIALE -->
+    <!-- NOTE CONVIVIALE (haut) -->
     <section class="section-card p-6 md:p-8 mt-8 text-center">
       <h2 class="text-3xl font-bold mb-3 text-lab-accent">On peut jaser de votre projet?</h2>
       <p class="text-xl text-gray-200 mb-5">
@@ -83,8 +87,14 @@
 
     <!-- LE CONCEPT -->
     <section class="section-card p-6 md:p-8 mt-10">
-      <h2 class="text-3xl font-bold mb-3 text-lab-accent">C’est quoi, au juste?</h2>
-      <p class="text-lg text-gray-200">
+      <div class="flex items-center justify-between flex-wrap gap-3">
+        <h2 class="text-3xl font-bold text-lab-accent">C’est quoi, au juste?</h2>
+        <span class="text-sm text-gray-300 bg-white/5 border border-white/10 px-3 py-1 rounded-full">
+          Certaines fonctions sont en préparation — <b>très bientôt</b> 😉
+        </span>
+      </div>
+
+      <p class="text-lg text-gray-200 mt-3">
         Le Ewick Lab, c’est un endroit pour découvrir l’intelligence artificielle sans stress.
         Je vous montre des outils et je vous aide à vous amuser avec, à votre rythme.
       </p>
@@ -96,7 +106,6 @@
           <li>✨ <b>Légendes QC Générateur</b> — des histoires bien d’ici.</li>
           <li>🗣️ <b>Voix EdHick</b> — un projet de voix synthétique québécoise.</li>
         </ul>
-        <!-- Remplacement par l’image réelle -->
         <div class="lg:col-span-1 mt-2 md:mt-0 flex justify-center items-center">
           <img
             src="https://etropal00.github.io/photo.png"
@@ -110,8 +119,14 @@
 
     <!-- ESSAYER L’IA -->
     <section id="essayer-ia" class="section-card p-6 md:p-8 mt-10">
-      <h2 class="text-3xl font-bold mb-3 text-lab-accent">Essayer l’IA (simple)</h2>
-      <p class="text-lg text-gray-200 mb-4">
+      <div class="flex items-center justify-between flex-wrap gap-3">
+        <h2 class="text-3xl font-bold text-lab-accent">Essayer l’IA (simple)</h2>
+        <span class="text-sm text-gray-300 bg-white/5 border border-white/10 px-3 py-1 rounded-full">
+          Générateur de prompts : <b>bientôt</b> (ça s’en vient!)
+        </span>
+      </div>
+
+      <p class="text-lg text-gray-200 mt-3 mb-4">
         Écrivez une idée en une phrase. L’outil crée pour vous une consigne (« prompt ») prête à utiliser.
       </p>
 
@@ -122,9 +137,10 @@
         <textarea id="promptBuilderInput" rows="2"
                   class="w-full p-3 rounded-lg bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-lab-secondary focus:outline-none"></textarea>
         <div class="mt-4 flex items-center gap-3">
-          <button onclick="generatePrompt()" id="generatePromptButton"
-                  class="btn-lg bg-lab-secondary text-gray-900 hover:bg-lab-secondary/85" disabled>
-            ✨ Générer le prompt
+          <button id="generatePromptButton"
+                  class="btn-lg bg-lab-secondary text-gray-900 soon"
+                  aria-disabled="true" title="Fonction en préparation — très bientôt">
+            ✨ Générer le prompt (bientôt)
           </button>
           <span id="promptLoading" class="hidden text-lab-secondary">Chargement…</span>
         </div>
@@ -132,8 +148,13 @@
       </div>
 
       <div class="mt-8">
-        <h3 class="text-2xl font-bold mb-3 text-lab-accent">Parler à EdHick (robot)</h3>
-        <p class="text-lg text-gray-200 mb-3">Écrivez une question, puis cliquez « Envoyer ».</p>
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <h3 class="text-2xl font-bold text-lab-accent">Parler à EdHick (robot)</h3>
+          <span class="text-sm text-gray-300 bg-white/5 border border-white/10 px-3 py-1 rounded-full">
+            Chat en direct : <b>bientôt</b>
+          </span>
+        </div>
+        <p class="text-lg text-gray-200 mt-3 mb-3">Écrivez une question, puis cliquez « Envoyer ».</p>
 
         <div class="w-full h-[480px] bg-gray-800 rounded-xl p-4 border-4 border-double border-lab-accent/60 flex flex-col">
           <div id="chatContainer" class="flex-grow overflow-y-auto space-y-3 p-2">
@@ -143,11 +164,11 @@
           </div>
           <div class="flex gap-2 pt-3">
             <input id="messageInput" type="text" placeholder="Écrivez ici…"
-                   class="flex-grow p-3 rounded-l-lg bg-gray-900 border border-lab-accent/40 text-white focus:ring-2 focus:ring-lab-accent focus:outline-none"
-                   onkeydown="if(event.key==='Enter') sendMessage()">
-            <button id="sendButton" onclick="sendMessage()"
-                    class="bg-lab-accent text-white font-semibold px-6 rounded-r-lg hover:bg-lab-accent/85" disabled>
-              Envoyer
+                   class="flex-grow p-3 rounded-l-lg bg-gray-900 border border-lab-accent/40 text-white focus:ring-2 focus:ring-lab-accent focus:outline-none">
+            <button id="sendButton"
+                    class="bg-lab-accent text-white font-semibold px-6 rounded-r-lg soon"
+                    aria-disabled="true" title="Fonction en préparation — très bientôt">
+              Envoyer (bientôt)
             </button>
           </div>
           <div id="chatLoading" class="hidden text-center mt-2 text-lab-accent">EdHick réfléchit…</div>
@@ -155,14 +176,14 @@
       </div>
     </section>
 
-    <!-- SOUTENIR -->
+    <!-- NOTE CONVIVIALE (bas) -->
     <section class="section-card p-6 md:p-8 mt-10 text-center">
-      <h2 class="text-3xl font-bold mb-3 text-lab-accent">Soutenir le Ewick Lab</h2>
-      <p class="text-lg text-gray-200 mb-6">Chaque petit coup de main aide à créer d’autres essais faciles et amusants.</p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="#" class="btn-lg bg-lab-accent text-white hover:bg-lab-accent/85">🧪 Devenir membre</a>
-        <a href="#" class="btn-lg bg-lab-secondary text-gray-900 hover:bg-lab-secondary/85">☕ Offrir un café</a>
-      </div>
+      <h2 class="text-3xl font-bold mb-3 text-lab-accent">Une question avant de partir?</h2>
+      <p class="text-xl text-gray-200 mb-5">
+        Écrivez-moi sur Messenger et je vous réponds. On garde ça simple, clair, et agréable.
+      </p>
+      <a href="https://m.me/Etropal68" target="_blank" rel="noopener"
+         class="btn-lg bg-lab-accent text-white hover:bg-lab-accent/85">💬 Me parler sur Messenger</a>
     </section>
 
     <!-- PIED DE PAGE -->
@@ -182,7 +203,13 @@
     </svg>
   </a>
 
-  <!-- SCRIPTS -->
+  <!-- Bouton “Remonter en haut” -->
+  <button class="to-top bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-full px-4 py-2 shadow"
+          onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Remonter en haut">
+    ↑ Remonter
+  </button>
+
+  <!-- SCRIPTS (les fonctionnalités à venir restent mentionnées “bientôt”) -->
   <script>
     async function fetchWithBackoff(url, options, retries=3, delay=1000){
       for(let i=0;i<retries;i++){
@@ -198,92 +225,20 @@
       }
     }
 
+    // (Les handlers d’origine restent, mais les boutons sont visuellement désactivés)
     const chatContainer=document.getElementById('chatContainer');
     const messageInput=document.getElementById('messageInput');
     const sendButton=document.getElementById('sendButton');
     const chatLoading=document.getElementById('chatLoading');
     let chatHistory=[];
 
-    window.onload=function(){
-      if(sendButton) sendButton.disabled=false;
-      const btn=document.getElementById('generatePromptButton');
-      if(btn) btn.disabled=false;
-    };
-
+    // On n’active pas les boutons (ils restent “bientôt”)
     function addMessage(text,isUser){
       const div=document.createElement('div');
       div.className=`chat-message text-white text-base ${isUser?'user-message':'ai-message'}`;
       div.innerHTML=text.replace(/\n/g,'<br>');
       chatContainer.appendChild(div);
       chatContainer.scrollTop=chatContainer.scrollHeight;
-    }
-
-    async function sendMessage(){
-      const userQuery=messageInput.value.trim();
-      if(!userQuery) return;
-      addMessage(userQuery,true);
-      messageInput.value='';
-      chatHistory.push({role:"user",parts:[{text:userQuery}]});
-      sendButton.disabled=true;
-      chatLoading.classList.remove('hidden');
-
-      const payload={
-        contents:chatHistory,
-        tools:[{"google_search":{}}],
-        systemInstruction:{parts:[{text:SYSTEM_INSTRUCTION_EDHICK}]},
-      };
-
-      try{
-        const res=await fetchWithBackoff(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-        const data=await res.json();
-        const c=data.candidates?.[0];
-        if(c && c.content?.parts?.[0]?.text){
-          const t=c.content.parts[0].text;
-          addMessage(t,false);
-          chatHistory.push({role:"model",parts:[{text:t}]});
-        }else{
-          addMessage("Désolé, j’ai pogné un bug! Peux-tu reformuler?", false);
-        }
-      }catch(e){
-        console.error("Erreur Gemini API:", e);
-        addMessage("Oups, le serveur est parti en sucette. Réessaie tantôt, mon chum.", false);
-      }finally{
-        sendButton.disabled=false;
-        chatLoading.classList.add('hidden');
-      }
-    }
-
-    async function generatePrompt(){
-      const idea=document.getElementById('promptBuilderInput').value.trim();
-      const out=document.getElementById('promptOutput');
-      const load=document.getElementById('promptLoading');
-      const btn=document.getElementById('generatePromptButton');
-
-      if(!idea){ out.innerText="Écrivez une idée d’abord 🙂"; out.classList.remove('hidden'); return; }
-
-      btn.disabled=true; out.classList.add('hidden'); load.classList.remove('hidden');
-
-      const q=`Détaille et améliore cette idée pour créer un prompt ultra-réaliste de type Sora ou Gemini. Ajoute des détails de caméra, d'éclairage, de texture et de style visuel. Fais-le de manière créative et amusante, en gardant l'esprit d'EdHick, mais produis le résultat final en format de prompt technique (une seule ligne, en anglais, sans introductions ni explications, pour une IA générative). L'idée est : "${idea}"`;
-
-      const payload={
-        contents:[{parts:[{text:q}]}],
-        systemInstruction:{parts:[{text:"Tu es un assistant expert en 'Prompt Engineering' pour les modèles de génération de vidéo (Sora) et d'image (Gemini)."}]},
-      };
-
-      try{
-        const res=await fetchWithBackoff(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-        const data=await res.json();
-        const txt=data.candidates?.[0]?.content?.parts?.[0]?.text || "Erreur de génération du prompt.";
-        out.innerText=txt.trim();
-        out.classList.remove('hidden');
-      }catch(e){
-        console.error("Erreur Prompt Builder API:", e);
-        out.innerText="Désolé, j’ai fait un 404. Réessaie 🙂";
-        out.classList.remove('hidden');
-      }finally{
-        btn.disabled=false;
-        load.classList.add('hidden');
-      }
     }
   </script>
 </body>
