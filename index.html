@@ -5,102 +5,223 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ewick Lab – IA en québécois (55+)</title>
 
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
-          colors: { 'lab-dark':'#0f172a','lab-accent':'#3b82f6','lab-secondary':'#10b981' },
-          fontFamily: { sans:['Inter','system-ui','sans-serif'] }
+          colors: {
+            'lab-dark': '#0f172a',
+            'lab-accent': '#3b82f6',
+            'lab-secondary': '#10b981'
+          },
+          fontFamily: { sans: ['Inter','system-ui','sans-serif'] }
         }
       }
     }
   </script>
+
   <style>
-    body{font-family:'Inter',system-ui,sans-serif;background:#0f172a;color:#e5e7eb}
-    .section-card{background:#1e293b;border-radius:14px;box-shadow:0 10px 18px rgba(0,0,0,.25)}
-    .neon-glow{text-shadow:0 0 6px #3b82f6,0 0 14px #3b82f6}
-    .btn-lg{padding:.95rem 1.35rem;font-weight:700;border-radius:999px}
-    .pulse-ring{position:absolute;inset:0;border-radius:9999px;box-shadow:0 0 0 0 rgba(59,130,246,.65);animation:pulse 2.2s ease-out infinite;pointer-events:none}
+    body{ font-family:'Inter',system-ui,sans-serif; background:#0f172a; color:#e5e7eb }
+    .section-card{ background:#1e293b; border-radius:14px; box-shadow:0 10px 18px rgba(0,0,0,.25) }
+    .neon-glow{ text-shadow:0 0 6px #3b82f6, 0 0 14px #3b82f6 }
+    .btn-lg{ padding:.95rem 1.35rem; font-weight:700; border-radius:999px }
+    .pulse-ring{ position:absolute; inset:0; border-radius:9999px; box-shadow:0 0 0 0 rgba(59,130,246,.65); animation:pulse 2.2s ease-out infinite; pointer-events:none }
     @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(59,130,246,.65);opacity:1}70%{box-shadow:0 0 0 18px rgba(59,130,246,0);opacity:.25}100%{box-shadow:0 0 0 0 rgba(59,130,246,0);opacity:0}}
-    @media (prefers-reduced-motion:reduce){.pulse-ring{animation:none}}
+    @media (prefers-reduced-motion: reduce){ .pulse-ring{animation:none} }
+
+    /* État "bientôt" */
+    .soon { opacity:.6; cursor:not-allowed; }
+    .soon[aria-disabled="true"]:focus { outline:none }
+
+    /* Bouton remonter */
+    .to-top { position:fixed; left:1.25rem; bottom:1.25rem; }
   </style>
+
+  <!-- Variables (si tu actives l'IA plus tard) -->
+  <script>
+    const apiKey = ""; // <- on laisse vide tant que c'est "bientôt"
+    const MODEL = "models/gemini-1.5-flash";
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/${MODEL}:generateContent?key=${apiKey}`;
+    const SYSTEM_INSTRUCTION_EDHICK =
+      "Tu es EdHick GPT, l'intelligence artificielle québécoise et humoristique du Ewick Lab. Ton ton est amical, décontracté, et tu utilises des expressions québécoises. Tu es brillant et créatif. Aide l'utilisateur à générer des idées de contenu, des blagues, ou des concepts créatifs. Sois concis, drôle, et commence toujours par une salutation en québécois.";
+  </script>
+
+  <!-- Gestion "Fonctionnalité bientôt" -->
+  <script>
+    function attachSoonHandlers() {
+      // Tous les éléments marqués data-soon="true"
+      document.querySelectorAll('[data-soon="true"]').forEach(el => {
+        el.classList.add('soon');
+        el.setAttribute('aria-disabled', 'true');
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          alert("Fonctionnalité bientôt disponible 🙂");
+        });
+      });
+      // Optionnel : tout lien vide ou vers # devient "bientôt"
+      document.querySelectorAll('a[href="#"]').forEach(a => {
+        a.classList.add('soon');
+        a.setAttribute('aria-disabled', 'true');
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          alert("Fonctionnalité bientôt disponible 🙂");
+        });
+      });
+    }
+    window.addEventListener('DOMContentLoaded', attachSoonHandlers);
+  </script>
 </head>
 
 <body class="min-h-screen">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
-    <!-- En-tête -->
+    <!-- EN-TÊTE -->
     <header class="text-center pt-10 pb-6 border-b border-white/10">
       <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold neon-glow leading-tight">
-        Bienvenue au <span class="text-lab-accent">Ewick Lab</span><br class="hidden sm:block" /> — l’IA qui parle québécois.
+        Bienvenue au <span class="text-lab-accent">Ewick Lab</span><br class="hidden sm:block" />
+        — l’IA qui parle québécois.
       </h1>
-      <p class="mt-4 text-xl sm:text-2xl text-gray-200">Ici, on essaie l’IA, on apprend tranquillement… et on a du fun. 😊</p>
+      <p class="mt-4 text-xl sm:text-2xl text-gray-200">
+        Ici, on essaie l’IA, on apprend tranquillement… et on a du fun. 😊
+      </p>
+
       <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+        <!-- Messenger = ACTIF -->
         <a href="https://m.me/Etropal68" target="_blank" rel="noopener"
-           class="btn-lg bg-lab-accent text-white text-xl hover:bg-lab-accent/85 text-center">💬 Me parler sur Messenger</a>
-        <a href="#essayer-ia" class="btn-lg bg-lab-secondary text-gray-900 text-xl hover:bg-lab-secondary/85 text-center">▶️ Essayer l’IA (simple)</a>
+           class="btn-lg bg-lab-accent text-white text-xl hover:bg-lab-accent/85 text-center">
+          💬 Me parler sur Messenger
+        </a>
+        <!-- Essayer l'IA = BIENTÔT -->
+        <a href="#"
+           class="btn-lg bg-lab-secondary text-gray-900 text-xl text-center"
+           data-soon="true" title="Fonctionnalité bientôt">
+          ▶️ Essayer l’IA (bientôt)
+        </a>
       </div>
-      <p class="mt-3 text-sm text-gray-400">Besoin d’aide? Clique sur « Me parler sur Messenger » — je te réponds là.</p>
+
+      <p class="mt-3 text-sm text-gray-400">
+        Besoin d’aide? Clique sur « Me parler sur Messenger » — je te réponds là.
+      </p>
     </header>
 
-    <!-- Note conviviale -->
+    <!-- NOTE CONVIVIALE (haut) -->
     <section class="section-card p-6 md:p-8 mt-8 text-center">
       <h2 class="text-3xl font-bold mb-3 text-lab-accent">On peut jaser de votre projet?</h2>
-      <p class="text-xl text-gray-200 mb-5">Pas besoin d’être « techno ». Dites-moi ce que vous voulez faire — petites vidéos, idées pour Facebook, ou juste comprendre l’IA. On avance doucement, étape par étape.</p>
-      <a href="https://m.me/Etropal68" target="_blank" rel="noopener" class="btn-lg bg-gray-600 text-white hover:bg-gray-700">📩 M’écrire sur Messenger</a>
+      <p class="text-xl text-gray-200 mb-5">
+        Pas besoin d’être « techno ». Dites-moi ce que vous voulez faire — petites vidéos, idées pour Facebook,
+        ou juste comprendre c’que l’IA peut vous donner comme coup de main. On avance doucement, étape par étape.
+      </p>
+      <a href="https://m.me/Etropal68" target="_blank" rel="noopener"
+         class="btn-lg bg-gray-600 text-white hover:bg-gray-700">📩 M’écrire sur Messenger</a>
     </section>
 
-    <!-- Le concept -->
+    <!-- LE CONCEPT -->
     <section class="section-card p-6 md:p-8 mt-10">
-      <h2 class="text-3xl font-bold mb-3 text-lab-accent">C’est quoi, au juste?</h2>
-      <p class="text-lg text-gray-200">Découvrir l’IA sans stress. Je vous montre des outils et je vous aide à vous amuser avec, à votre rythme.</p>
+      <div class="flex items-center justify-between flex-wrap gap-3">
+        <h2 class="text-3xl font-bold text-lab-accent">C’est quoi, au juste?</h2>
+        <span class="text-sm text-gray-300 bg-white/5 border border-white/10 px-3 py-1 rounded-full">
+          Certaines fonctions sont en préparation — <b>très bientôt</b> 😉
+        </span>
+      </div>
+
+      <p class="text-lg text-gray-200 mt-3">
+        Le Ewick Lab, c’est un endroit pour découvrir l’intelligence artificielle sans stress.
+        Je vous montre des outils et je vous aide à vous amuser avec, à votre rythme.
+      </p>
+
       <div class="grid md:grid-cols-3 gap-6 mt-6">
         <ul class="space-y-3 text-lg md:col-span-2">
           <li>🧠 <b>EdHick GPT</b> — un p’tit robot qui jase comme nous autres.</li>
           <li>🧩 <b>Prompt Builder pour Sora</b> — des idées transformées en vidéos réalistes.</li>
           <li>✨ <b>Légendes QC Générateur</b> — des histoires bien d’ici.</li>
-          <li>🗣️ <b>Voix EdHick</b> — projet de voix synthétique québécoise.</li>
+          <li>🗣️ <b>Voix EdHick</b> — un projet de voix synthétique québécoise.</li>
         </ul>
         <div class="lg:col-span-1 mt-2 md:mt-0 flex justify-center items-center">
-          <img src="https://etropal00.github.io/photo.png" alt="Ewick Lab — cerveau robotique" loading="lazy"
-               class="w-full h-48 object-cover rounded-lg border border-lab-accent/50 shadow-lg">
+          <img
+            src="https://etropal00.github.io/photo.png"
+            alt="Ewick Lab — cerveau robotique avec éclair"
+            loading="lazy"
+            class="w-full h-48 object-cover rounded-lg border border-lab-accent/50 shadow-lg"
+          >
         </div>
       </div>
     </section>
 
-    <!-- Essayer l'IA -->
+    <!-- ESSAYER L’IA (Section affichée mais tout est "bientôt") -->
     <section id="essayer-ia" class="section-card p-6 md:p-8 mt-10">
-      <h2 class="text-3xl font-bold mb-3 text-lab-accent">Essayer l’IA (simple)</h2>
-      <p class="text-lg text-gray-200 mb-4">Écrivez une idée en une phrase. Le robot crée pour vous une consigne (« prompt ») prête à utiliser.</p>
+      <div class="flex items-center justify-between flex-wrap gap-3">
+        <h2 class="text-3xl font-bold text-lab-accent">Essayer l’IA (simple)</h2>
+        <span class="text-sm text-gray-300 bg-white/5 border border-white/10 px-3 py-1 rounded-full">
+          Générateur de prompts : <b>bientôt</b> (ça s’en vient!)
+        </span>
+      </div>
+
+      <p class="text-lg text-gray-200 mt-3 mb-4">
+        Écrivez une idée en une phrase. L’outil vous créera bientôt une consigne (« prompt ») prête à utiliser.
+      </p>
 
       <div class="bg-gray-800 p-5 rounded-lg border border-lab-secondary/40">
-        <label for="promptBuilderInput" class="block text-gray-300 mb-2 text-lg">Votre idée (ex.: « Une poutine qui chante du Céline »)</label>
-        <textarea id="promptBuilderInput" rows="2" class="w-full p-3 rounded-lg bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-lab-secondary focus:outline-none"></textarea>
+        <label for="promptBuilderInput" class="block text-gray-300 mb-2 text-lg">
+          Votre idée (ex.: « Une poutine qui chante du Céline »)
+        </label>
+        <textarea id="promptBuilderInput" rows="2"
+                  class="w-full p-3 rounded-lg bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-lab-secondary focus:outline-none"></textarea>
         <div class="mt-4 flex items-center gap-3">
-          <button onclick="generatePrompt()" id="generatePromptButton" class="btn-lg bg-lab-secondary text-gray-900 hover:bg-lab-secondary/85">
-            ✨ Générer le prompt
-          </button>
+          <a href="#"
+             class="btn-lg bg-lab-secondary text-gray-900"
+             data-soon="true" title="Fonctionnalité bientôt">✨ Générer le prompt (bientôt)</a>
           <span id="promptLoading" class="hidden text-lab-secondary">Chargement…</span>
         </div>
         <div id="promptOutput" class="mt-4 p-4 bg-gray-900 rounded-lg text-lg text-lab-secondary hidden"></div>
       </div>
+
+      <div class="mt-8">
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <h3 class="text-2xl font-bold text-lab-accent">Parler à EdHick (robot)</h3>
+          <span class="text-sm text-gray-300 bg-white/5 border border-white/10 px-3 py-1 rounded-full">
+            Chat en direct : <b>bientôt</b>
+          </span>
+        </div>
+        <p class="text-lg text-gray-200 mt-3 mb-3">Écrivez une question, puis cliquez « Envoyer ».</p>
+
+        <div class="w-full h-[480px] bg-gray-800 rounded-xl p-4 border-4 border-double border-lab-accent/60 flex flex-col">
+          <div id="chatContainer" class="flex-grow overflow-y-auto space-y-3 p-2">
+            <div class="ai-message chat-message text-base bg-gray-600">
+              Salut l’artiste! Dites-moi ce que vous voulez créer — je vous aide sans vous casser la tête.
+            </div>
+          </div>
+          <div class="flex gap-2 pt-3">
+            <input id="messageInput" type="text" placeholder="Écrivez ici…"
+                   class="flex-grow p-3 rounded-l-lg bg-gray-900 border border-lab-accent/40 text-white focus:ring-2 focus:ring-lab-accent focus:outline-none">
+            <a href="#"
+               class="bg-lab-accent text-white font-semibold px-6 rounded-r-lg"
+               data-soon="true" title="Fonctionnalité bientôt">Envoyer (bientôt)</a>
+          </div>
+          <div id="chatLoading" class="hidden text-center mt-2 text-lab-accent">EdHick réfléchit…</div>
+        </div>
+      </div>
     </section>
 
-    <!-- Note conviviale (bas) -->
+    <!-- NOTE CONVIVIALE (bas) -->
     <section class="section-card p-6 md:p-8 mt-10 text-center">
       <h2 class="text-3xl font-bold mb-3 text-lab-accent">Une question avant de partir?</h2>
-      <p class="text-xl text-gray-200 mb-5">Écrivez-moi sur Messenger et je vous réponds. On garde ça simple et agréable.</p>
-      <a href="https://m.me/Etropal68" target="_blank" rel="noopener" class="btn-lg bg-lab-accent text-white hover:bg-lab-accent/85">💬 Me parler sur Messenger</a>
+      <p class="text-xl text-gray-200 mb-5">
+        Écrivez-moi sur Messenger et je vous réponds. On garde ça simple, clair, et agréable.
+      </p>
+      <a href="https://m.me/Etropal68" target="_blank" rel="noopener"
+         class="btn-lg bg-lab-accent text-white hover:bg-lab-accent/85">💬 Me parler sur Messenger</a>
     </section>
 
+    <!-- PIED DE PAGE -->
     <footer class="text-center mt-12 py-8 text-gray-400 border-t border-white/10">
       <p class="text-base">© 2025 Ewick Lab — une division du monde curieux d’EdHick.</p>
       <p class="text-sm mt-1">Propulsé par un peu d’IA… et beaucoup de bonne humeur.</p>
     </footer>
   </div>
 
-  <!-- Bulle Messenger -->
+  <!-- Bulle Messenger flottante -->
   <a href="https://m.me/Etropal68" target="_blank" rel="noopener"
      class="fixed bottom-6 right-6 bg-lab-accent hover:bg-lab-accent/85 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg"
      aria-label="Contacter via Messenger">
@@ -110,53 +231,10 @@
     </svg>
   </a>
 
-  <!-- ===== Script de branchement Netlify (PROXY_URL) ===== -->
-  <script>
-    const PROXY_URL = "https://splendid-dragon-940b4e.netlify.app/.netlify/functions/ai";
-
-    async function generatePrompt() {
-      const idea = document.getElementById('promptBuilderInput').value.trim();
-      const out  = document.getElementById('promptOutput');
-      const load = document.getElementById('promptLoading');
-      const btn  = document.getElementById('generatePromptButton');
-
-      if (!idea) {
-        out.innerText = "Écris une idée d’abord 🙂";
-        out.classList.remove('hidden');
-        return;
-      }
-
-      btn.disabled = true;
-      out.classList.add('hidden');
-      load.classList.remove('hidden');
-
-      try {
-        const res = await fetch(PROXY_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            idea,
-            system: "Tu es EdHick GPT, un québécois drôle, imaginatif et flyé."
-          })
-        });
-
-        const data = await res.json();
-        const txt =
-          data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ||
-          data?.text || // si tu renvoies {text} côté fonction
-          data?.error?.message ||
-          "Aucune réponse générée.";
-
-        out.innerText = txt;
-        out.classList.remove('hidden');
-      } catch (e) {
-        out.innerText = "Oups, erreur de communication avec le serveur.";
-        out.classList.remove('hidden');
-      } finally {
-        btn.disabled = false;
-        load.classList.add('hidden');
-      }
-    }
-  </script>
+  <!-- Bouton “Remonter en haut” -->
+  <button class="to-top bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-full px-4 py-2 shadow"
+          onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Remonter en haut">
+    ↑ Remonter
+  </button>
 </body>
 </html>
