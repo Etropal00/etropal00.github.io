@@ -1,192 +1,316 @@
-diff --git a/index.html b/index.html
-index fcb397ca54f3f4660f026359f5935fe18c504dce..edd103fa1343a7d04cf7d0fcea911d497f7d45de 100644
---- a/index.html
-+++ b/index.html
-@@ -17,124 +17,164 @@
-   </script>
-   <style>
-     body{font-family:'Inter',system-ui,sans-serif;background:#0f172a;color:#e5e7eb}
-     .section-card{background:#1e293b;border-radius:14px;box-shadow:0 10px 18px rgba(0,0,0,.25)}
-     .neon-glow{text-shadow:0 0 6px #3b82f6,0 0 14px #3b82f6}
-     .btn-lg{padding:.95rem 1.35rem;font-weight:700;border-radius:999px}
-     .pulse-ring{position:absolute;inset:0;border-radius:9999px;box-shadow:0 0 0 0 rgba(59,130,246,.65);animation:pulse 2.2s ease-out infinite;pointer-events:none}
-     @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(59,130,246,.65);opacity:1}70%{box-shadow:0 0 0 18px rgba(59,130,246,0);opacity:.25}100%{box-shadow:0 0 0 0 rgba(59,130,246,0);opacity:0}}
-     @media (prefers-reduced-motion:reduce){.pulse-ring{animation:none}}
-     .soon{opacity:.6;cursor:not-allowed}
-     .to-top{position:fixed;left:1.25rem;bottom:1.25rem}
-   </style>
-   <script>
-     function attachSoonHandlers(){
-       document.querySelectorAll('[data-soon="true"]').forEach(el=>{
-         el.classList.add('soon'); el.setAttribute('aria-disabled','true');
-         el.addEventListener('click',e=>{e.preventDefault(); alert("Fonctionnalité bientôt disponible 🙂");});
-       });
-       document.querySelectorAll('a[href="#"]').forEach(a=>{
-         a.classList.add('soon'); a.setAttribute('aria-disabled','true');
-         a.addEventListener('click',e=>{e.preventDefault(); alert("Fonctionnalité bientôt disponible 🙂");});
-       });
-     }
-     window.addEventListener('DOMContentLoaded', attachSoonHandlers);
-   </script>
--  <script>
--    const SYSTEM_INSTRUCTION_EDHICK="Tu es EdHick GPT, l'intelligence artificielle québécoise et humoristique du Ewick Lab. Ton ton est amical, décontracté, et tu utilises des expressions québécoises. Tu es brillant et créatif. Aide l'utilisateur à générer des idées de contenu, des blagues, ou des concepts créatifs. Sois concis, drôle, et commence toujours par une salutation en québécois.";
--    const PROXY_URL="https://ewick-gemini-proxy.erictronique.workers.dev";
--  </script>
-+  <script>
-+    const PROMPT_TONES=[
-+      "friendly and enthusiastic",
-+      "warm and cinematic",
-+      "playful but heartfelt",
-+      "documentary style with natural light",
-+      "dynamic commercial look",
-+      "soft diffused studio lighting"
-+    ];
-+    const PROMPT_CAMERA_DETAILS=[
-+      "shot on a 35mm lens at golden hour",
-+      "4K ultra HD, crisp focus",
-+      "volumetric lighting, shallow depth of field",
-+      "smooth Steadicam movement",
-+      "slow motion capture, 120fps",
-+      "aerial drone perspective"
-+    ];
-+    const PROMPT_EXTRA_ELEMENTS=[
-+      "high contrast colors",
-+      "detailed textures",
-+      "subtle particles in the air",
-+      "cinematic atmosphere",
-+      "realistic skin tones",
-+      "immersive ambient sound design"
-+    ];
-+
-+    function buildPrompt(idea){
-+      const tone=randomItem(PROMPT_TONES);
-+      const camera=randomItem(PROMPT_CAMERA_DETAILS);
-+      const extra=randomItem(PROMPT_EXTRA_ELEMENTS);
-+
-+      return [
-+        `Generate a Sora video prompt inspired by: "${idea}"`,
-+        "Use Québécois cultural references when relevant.",
-+        `Tone: ${tone}.`,
-+        `Camera / technical notes: ${camera}.`,
-+        `Add visual polish with ${extra}.`
-+      ].join("\n");
-+    }
-+
-+    function randomItem(list){
-+      return list[Math.floor(Math.random()*list.length)];
-+    }
-+  </script>
- </head>
- <body class="min-h-screen">
-   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-     <header class="text-center pt-10 pb-6 border-b border-white/10">
-       <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold neon-glow leading-tight">
-         Bienvenue au <span class="text-lab-accent">Ewick Lab</span><br class="hidden sm:block" /> — l’IA qui parle québécois.
-       </h1>
-       <p class="mt-4 text-xl sm:text-2xl text-gray-200">Ici, on essaie l’IA, on apprend tranquillement… et on a du fun. 😊</p>
-       <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-         <a href="https://m.me/Etropal68" target="_blank" rel="noopener" class="btn-lg bg-lab-accent text-white text-xl hover:bg-lab-accent/85 text-center">💬 Me parler sur Messenger</a>
-         <a href="#essayer-ia" class="btn-lg bg-lab-secondary text-gray-900 text-xl hover:bg-lab-secondary/85 text-center">▶️ Essayer l’IA (simple)</a>
-       </div>
-       <p class="mt-3 text-sm text-gray-400">Besoin d’aide? Clique sur « Me parler sur Messenger » — je te réponds là.</p>
-     </header>
- 
-     <section class="section-card p-6 md:p-8 mt-8 text-center">
-       <h2 class="text-3xl font-bold mb-3 text-lab-accent">On peut jaser de votre projet?</h2>
-       <p class="text-xl text-gray-200 mb-5">Pas besoin d’être « techno ». Dites-moi ce que vous voulez faire — petites vidéos, idées pour Facebook, ou juste comprendre c’que l’IA peut vous donner comme coup de main. On avance doucement, étape par étape.</p>
-       <a href="https://m.me/Etropal68" target="_blank" rel="noopener" class="btn-lg bg-gray-600 text-white hover:bg-gray-700">📩 M’écrire sur Messenger</a>
-     </section>
- 
-     <section class="section-card p-6 md:p-8 mt-10">
-       <div class="flex items-center justify-between flex-wrap gap-3">
-         <h2 class="text-3xl font-bold text-lab-accent">C’est quoi, au juste?</h2>
-         <span class="text-sm text-gray-300 bg-white/5 border border-white/10 px-3 py-1 rounded-full">Certaines fonctions sont en préparation — <b>très bientôt</b> 😉</span>
-       </div>
-       <p class="text-lg text-gray-200 mt-3">Le Ewick Lab, c’est un endroit pour découvrir l’intelligence artificielle sans stress. Je vous montre des outils et je vous aide à vous amuser avec, à votre rythme.</p>
-       <div class="grid md:grid-cols-3 gap-6 mt-6">
-         <ul class="space-y-3 text-lg md:col-span-2">
-           <li>🧠 <b>EdHick GPT</b> — un p’tit robot qui jase comme nous autres.</li>
-           <li>🧩 <b>Prompt Builder pour Sora</b> — des idées transformées en vidéos réalistes.</li>
-           <li>✨ <b>Légendes QC Générateur</b> — des histoires bien d’ici.</li>
-           <li>🗣️ <b>Voix EdHick</b> — un projet de voix synthétique québécoise.</li>
-         </ul>
-         <div class="lg:col-span-1 mt-2 md:mt-0 flex justify-center items-center">
-           <img src="https://etropal00.github.io/photo.png" alt="Ewick Lab — cerveau robotique avec éclair" loading="lazy" class="w-full h-48 object-cover rounded-lg border border-lab-accent/50 shadow-lg">
-         </div>
-       </div>
-     </section>
- 
-     <section id="essayer-ia" class="section-card p-6 md:p-8 mt-10">
-       <div class="flex items-center justify-between flex-wrap gap-3">
-         <h2 class="text-3xl font-bold text-lab-accent">Essayer l’IA (simple)</h2>
--        <span class="text-sm text-gray-300 bg-white/5 border border-white/10 px-3 py-1 rounded-full">Générateur de prompts : <b>actif</b></span>
-+        <span class="text-sm text-gray-300 bg-white/5 border border-white/10 px-3 py-1 rounded-full">Générateur de prompts : <b>100% local</b></span>
-       </div>
-       <p class="text-lg text-gray-200 mt-3 mb-4">Écrivez une idée en une phrase. L’outil crée une consigne (« prompt ») en anglais, prête à coller dans Sora / Gemini.</p>
-       <div class="bg-gray-800 p-5 rounded-lg border border-lab-secondary/40">
-         <label for="promptBuilderInput" class="block text-gray-300 mb-2 text-lg">Votre idée (ex.: « Une poutine qui chante du Céline »)</label>
-         <textarea id="promptBuilderInput" rows="2" class="w-full p-3 rounded-lg bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-lab-secondary focus:outline-none"></textarea>
--        <div class="mt-4 flex items-center gap-3">
--          <button onclick="generatePrompt()" id="generatePromptButton" class="btn-lg bg-lab-secondary text-gray-900 hover:bg-lab-secondary/85">✨ Générer le prompt</button>
--          <span id="promptLoading" class="hidden text-lab-secondary">Chargement…</span>
--        </div>
-+        <div class="mt-4 flex items-center gap-3">
-+          <button onclick="generatePrompt()" id="generatePromptButton" class="btn-lg bg-lab-secondary text-gray-900 hover:bg-lab-secondary/85">✨ Générer le prompt</button>
-+        </div>
-         <div id="promptOutput" class="mt-4 p-4 bg-gray-900 rounded-lg text-lg text-lab-secondary hidden"></div>
-       </div>
-     </section>
- 
-     <section class="section-card p-6 md:p-8 mt-10 text-center">
-       <h2 class="text-3xl font-bold mb-3 text-lab-accent">Une question avant de partir?</h2>
-       <p class="text-xl text-gray-200 mb-5">Écrivez-moi sur Messenger et je vous réponds. On garde ça simple, clair, et agréable.</p>
-       <a href="https://m.me/Etropal68" target="_blank" rel="noopener" class="btn-lg bg-lab-accent text-white hover:bg-lab-accent/85">💬 Me parler sur Messenger</a>
-     </section>
- 
-     <footer class="text-center mt-12 py-8 text-gray-400 border-t border-white/10">
-       <p class="text-base">© 2025 Ewick Lab — une division du monde curieux d’EdHick.</p>
-       <p class="text-sm mt-1">Propulsé par un peu d’IA… et beaucoup de bonne humeur.</p>
-     </footer>
-   </div>
- 
-   <a href="https://m.me/Etropal68" target="_blank" rel="noopener" class="fixed bottom-6 right-6 bg-lab-accent hover:bg-lab-accent/85 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg" aria-label="Contacter via Messenger">
-     <span class="pulse-ring" aria-hidden="true"></span>
-     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" class="w-8 h-8 relative"><path d="M8 0C3.6 0 0 3.25 0 7.25c0 2.3 1.1 4.36 2.9 5.71V16l2.6-1.44c.8.22 1.6.34 2.5.34 4.4 0 8-3.25 8-7.25S12.4 0 8 0zm.8 9.8L6.8 8.25 3.7 9.8l3.5-3.71 1.4 1.55 3.1-1.55L8.8 9.8z"/></svg>
-   </a>
-   <button class="to-top bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-full px-4 py-2 shadow" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Remonter en haut">↑ Remonter</button>
- 
-   <script>
-     async function generatePrompt(){
-       const idea=document.getElementById('promptBuilderInput').value.trim();
-       const out=document.getElementById('promptOutput');
--      const load=document.getElementById('promptLoading');
--      const btn=document.getElementById('generatePromptButton');
--      if(!idea){ out.innerText="Écrivez une idée d’abord 🙂"; out.classList.remove('hidden'); return; }
--      btn.disabled=true; out.classList.add('hidden'); load.classList.remove('hidden');
--      try{
--        const res=await fetch(PROXY_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({idea,system:SYSTEM_INSTRUCTION_EDHICK})});
--        const data=await res.json();
--        const txt=data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "Aucun texte reçu.";
--        out.innerText=txt; out.classList.remove('hidden');
--      }catch(e){
--        out.innerText="Erreur avec le proxy. Vérifie PROXY_URL."; out.classList.remove('hidden');
--      }finally{ btn.disabled=false; load.classList.add('hidden'); }
--    }
--  </script>
-+      const btn=document.getElementById('generatePromptButton');
-+      if(!idea){ out.innerText="Écrivez une idée d’abord 🙂"; out.classList.remove('hidden'); return; }
-+      btn.disabled=true; out.classList.add('hidden');
-+      try{
-+        const prompt=buildPrompt(idea);
-+        out.innerText=prompt;
-+        out.classList.remove('hidden');
-+      }catch(e){
-+        out.innerText="Oups! Une erreur est survenue. Réessaie donc.";
-+        out.classList.remove('hidden');
-+      }finally{
-+        btn.disabled=false;
-+      }
-+    }
-+  </script>
- </body>
- </html>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ewick Lab – IA en québécois (55+)</title>
+  <meta
+    name="description"
+    content="Découvrez le Ewick Lab : un laboratoire ludique pour explorer l’IA en québécois, générer des idées et discuter de vos projets avec EdHick."
+  />
+  <link rel="icon" href="photo.png" type="image/png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="fr_CA" />
+  <meta property="og:title" content="Ewick Lab – IA en québécois (55+)" />
+  <meta
+    property="og:description"
+    content="Un espace simple pour apprendre l’intelligence artificielle, générer des prompts et discuter avec EdHick en québécois."
+  />
+  <meta property="og:url" content="https://etropal00.github.io/" />
+  <meta property="og:image" content="https://etropal00.github.io/photo.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Ewick Lab – IA en québécois (55+)" />
+  <meta
+    name="twitter:description"
+    content="Essayez l’IA en toute simplicité, avec des outils accessibles et une touche québécoise."
+  />
+  <meta name="twitter:image" content="https://etropal00.github.io/photo.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { 'lab-dark':'#0f172a','lab-accent':'#3b82f6','lab-secondary':'#10b981' },
+          fontFamily: { sans:['Inter','system-ui','sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    body{font-family:'Inter',system-ui,sans-serif;background:#0f172a;color:#e5e7eb}
+    .section-card{background:#1e293b;border-radius:14px;box-shadow:0 10px 18px rgba(0,0,0,.25)}
+    .neon-glow{text-shadow:0 0 6px #3b82f6,0 0 14px #3b82f6}
+    .btn-lg{padding:.95rem 1.35rem;font-weight:700;border-radius:999px}
+    .pulse-ring{position:absolute;inset:0;border-radius:9999px;box-shadow:0 0 0 0 rgba(59,130,246,.65);animation:pulse 2.2s ease-out infinite;pointer-events:none}
+    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(59,130,246,.65);opacity:1}70%{box-shadow:0 0 0 18px rgba(59,130,246,0);opacity:.25}100%{box-shadow:0 0 0 0 rgba(59,130,246,0);opacity:0}}
+    @media (prefers-reduced-motion:reduce){.pulse-ring{animation:none}}
+    .soon{opacity:.6;cursor:not-allowed}
+    .to-top{position:fixed;left:1.25rem;bottom:1.25rem}
+  </style>
+  <script>
+    function attachSoonHandlers(){
+      document.querySelectorAll('[data-soon="true"]').forEach(el=>{
+        el.classList.add('soon'); el.setAttribute('aria-disabled','true');
+        el.addEventListener('click',e=>{e.preventDefault(); alert("Fonctionnalité bientôt disponible 🙂");});
+      });
+      document.querySelectorAll('a[href="#"]').forEach(a=>{
+        a.classList.add('soon'); a.setAttribute('aria-disabled','true');
+        a.addEventListener('click',e=>{e.preventDefault(); alert("Fonctionnalité bientôt disponible 🙂");});
+      });
+    }
+    window.addEventListener('DOMContentLoaded', attachSoonHandlers);
+  </script>
+  <script>
+    const SYSTEM_INSTRUCTION_EDHICK="Tu es EdHick GPT, l'intelligence artificielle québécoise et humoristique du Ewick Lab. Ton ton est amical, décontracté, et tu utilises des expressions québécoises. Tu es brillant et créatif. Aide l'utilisateur à générer des idées de contenu, des blagues, ou des concepts créatifs. Sois concis, drôle, et commence toujours par une salutation en québécois.";
+    const PROXY_URL="https://ewick-gemini-proxy.erictronique.workers.dev";
+  </script>
+</head>
+<body class="min-h-screen">
+  <a
+    href="#contenu-principal"
+    class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:m-4 focus:rounded focus:bg-white focus:px-4 focus:py-2 focus:text-gray-900"
+  >
+    Aller au contenu principal
+  </a>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header class="text-center pt-10 pb-6 border-b border-white/10">
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold neon-glow leading-tight">
+        Bienvenue au <span class="text-lab-accent">Ewick Lab</span><br class="hidden sm:block" /> — l’IA qui parle québécois.
+      </h1>
+      <p class="mt-4 text-xl sm:text-2xl text-gray-200">Ici, on essaie l’IA, on apprend tranquillement… et on a du fun. 😊</p>
+      <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="https://m.me/Etropal68" target="_blank" rel="noopener" class="btn-lg bg-lab-accent text-white text-xl hover:bg-lab-accent/85 text-center">💬 Me parler sur Messenger</a>
+        <a href="#essayer-ia" class="btn-lg bg-lab-secondary text-gray-900 text-xl hover:bg-lab-secondary/85 text-center">▶️ Essayer l’IA (simple)</a>
+      </div>
+      <p class="mt-3 text-sm text-gray-400">Besoin d’aide? Clique sur « Me parler sur Messenger » — je te réponds là.</p>
+    </header>
+
+    <main id="contenu-principal">
+      <section class="section-card p-6 md:p-8 mt-8 text-center">
+        <h2 class="text-3xl font-bold mb-3 text-lab-accent">On peut jaser de votre projet?</h2>
+        <p class="text-xl text-gray-200 mb-5">Pas besoin d’être « techno ». Dites-moi ce que vous voulez faire — petites vidéos, idées pour Facebook, ou juste comprendre c’que l’IA peut vous donner comme coup de main. On avance doucement, étape par étape.</p>
+        <a href="https://m.me/Etropal68" target="_blank" rel="noopener" class="btn-lg bg-gray-600 text-white hover:bg-gray-700">📩 M’écrire sur Messenger</a>
+      </section>
+
+      <section class="section-card p-6 md:p-8 mt-10">
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <h2 class="text-3xl font-bold text-lab-accent">C’est quoi, au juste?</h2>
+          <span class="text-sm text-gray-300 bg-white/5 border border-white/10 px-3 py-1 rounded-full">Certaines fonctions sont en préparation — <b>très bientôt</b> 😉</span>
+        </div>
+        <p class="text-lg text-gray-200 mt-3">Le Ewick Lab, c’est un endroit pour découvrir l’intelligence artificielle sans stress. Je vous montre des outils et je vous aide à vous amuser avec, à votre rythme.</p>
+        <div class="grid md:grid-cols-3 gap-6 mt-6">
+          <ul class="space-y-3 text-lg md:col-span-2">
+            <li>🧠 <b>EdHick GPT</b> — un p’tit robot qui jase comme nous autres.</li>
+            <li>🧩 <b>Prompt Builder pour Sora</b> — des idées transformées en vidéos réalistes.</li>
+            <li>✨ <b>Légendes QC Générateur</b> — des histoires bien d’ici.</li>
+            <li>🗣️ <b>Voix EdHick</b> — un projet de voix synthétique québécoise.</li>
+          </ul>
+          <div class="lg:col-span-1 mt-2 md:mt-0 flex justify-center items-center">
+            <img src="https://etropal00.github.io/photo.png" alt="Ewick Lab — cerveau robotique avec éclair" loading="lazy" class="w-full h-48 object-cover rounded-lg border border-lab-accent/50 shadow-lg">
+          </div>
+        </div>
+      </section>
+
+      <section id="essayer-ia" class="section-card p-6 md:p-8 mt-10">
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <h2 class="text-3xl font-bold text-lab-accent">Essayer l’IA (simple)</h2>
+          <span class="text-sm text-gray-300 bg-white/5 border border-white/10 px-3 py-1 rounded-full">Générateur de prompts : <b>actif</b></span>
+        </div>
+        <p class="text-lg text-gray-200 mt-3 mb-4">Écrivez une idée en une phrase. L’outil crée une consigne (« prompt ») en anglais, prête à coller dans Sora / Gemini.</p>
+        <div class="bg-gray-800 p-5 rounded-lg border border-lab-secondary/40">
+          <label for="promptBuilderInput" class="block text-gray-300 mb-2 text-lg">Votre idée (ex.: « Une poutine qui chante du Céline »)</label>
+          <p id="promptHelper" class="text-sm text-gray-400 mb-2">
+            Une seule phrase suffit. L’outil la traduira en anglais et gardera la touche québécoise.
+          </p>
+          <textarea
+            id="promptBuilderInput"
+            rows="3"
+            maxlength="220"
+            aria-describedby="promptHelper promptCharCount"
+            placeholder="Décrivez la scène ou le concept que vous voulez générer…"
+            class="w-full p-3 rounded-lg bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-lab-secondary focus:outline-none"
+          ></textarea>
+          <div class="mt-1 text-right text-sm text-gray-400" id="promptCharCount" aria-live="polite">0 / 220 caractères</div>
+          <div class="mt-4 flex items-center gap-3 flex-wrap">
+            <button onclick="generatePrompt()" id="generatePromptButton" aria-controls="promptOutput" class="btn-lg bg-lab-secondary text-gray-900 hover:bg-lab-secondary/85">
+              ✨ Générer le prompt
+            </button>
+            <span id="promptLoading" class="hidden text-lab-secondary" role="status" aria-live="polite" aria-hidden="true">Chargement…</span>
+            <button id="copyPromptButton" type="button" class="btn-lg bg-gray-700 text-white hover:bg-gray-600 hidden">📋 Copier</button>
+            <span id="copyStatus" class="text-sm text-gray-300 hidden" role="status" aria-live="polite" tabindex="-1"></span>
+          </div>
+          <div id="promptOutput" class="mt-4 p-4 bg-gray-900 rounded-lg text-lg text-lab-secondary hidden" role="status" aria-live="polite" tabindex="-1"></div>
+        </div>
+      </section>
+
+      <section class="section-card p-6 md:p-8 mt-10 text-center">
+        <h2 class="text-3xl font-bold mb-3 text-lab-accent">Une question avant de partir?</h2>
+        <p class="text-xl text-gray-200 mb-5">Écrivez-moi sur Messenger et je vous réponds. On garde ça simple, clair, et agréable.</p>
+        <a href="https://m.me/Etropal68" target="_blank" rel="noopener" class="btn-lg bg-lab-accent text-white hover:bg-lab-accent/85">💬 Me parler sur Messenger</a>
+      </section>
+    </main>
+
+    <footer class="text-center mt-12 py-8 text-gray-400 border-t border-white/10">
+      <p class="text-base">© 2025 Ewick Lab — une division du monde curieux d’EdHick.</p>
+      <p class="text-sm mt-1">Propulsé par un peu d’IA… et beaucoup de bonne humeur.</p>
+    </footer>
+  </div>
+
+  <a href="https://m.me/Etropal68" target="_blank" rel="noopener" class="fixed bottom-6 right-6 bg-lab-accent hover:bg-lab-accent/85 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg" aria-label="Contacter via Messenger">
+    <span class="pulse-ring" aria-hidden="true"></span>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" class="w-8 h-8 relative"><path d="M8 0C3.6 0 0 3.25 0 7.25c0 2.3 1.1 4.36 2.9 5.71V16l2.6-1.44c.8.22 1.6.34 2.5.34 4.4 0 8-3.25 8-7.25S12.4 0 8 0zm.8 9.8L6.8 8.25 3.7 9.8l3.5-3.71 1.4 1.55 3.1-1.55L8.8 9.8z"/></svg>
+  </a>
+  <button class="to-top bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-full px-4 py-2 shadow" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Remonter en haut">↑ Remonter</button>
+
+  <script>
+    const promptInput=document.getElementById('promptBuilderInput');
+    const promptOutput=document.getElementById('promptOutput');
+    const promptLoading=document.getElementById('promptLoading');
+    const promptButton=document.getElementById('generatePromptButton');
+    const copyButton=document.getElementById('copyPromptButton');
+    const copyStatus=document.getElementById('copyStatus');
+    const charCount=document.getElementById('promptCharCount');
+    const maxChars=parseInt(promptInput?.getAttribute('maxlength') || '0',10);
+
+    function updateCharCount(){
+      if(!charCount){return;}
+      const current=promptInput.value.length;
+      charCount.textContent=`${current} / ${maxChars} caractères`;
+    }
+
+    promptInput.addEventListener('input',updateCharCount);
+    updateCharCount();
+
+    function resetCopyHelpers(){
+      copyButton.classList.add('hidden');
+      copyButton.setAttribute('aria-hidden','true');
+      copyStatus.classList.add('hidden');
+      copyStatus.setAttribute('aria-hidden','true');
+      copyStatus.textContent='';
+    }
+
+    function showCopyButton(){
+      copyButton.classList.remove('hidden');
+      copyButton.setAttribute('aria-hidden','false');
+    }
+
+    copyButton.addEventListener('click',async()=>{
+      const text=promptOutput.textContent.trim();
+      if(!text){return;}
+      try{
+        if(navigator.clipboard?.writeText){
+          await navigator.clipboard.writeText(text);
+        }else{
+          const temp=document.createElement('textarea');
+          temp.value=text;
+          temp.setAttribute('readonly','');
+          temp.style.position='absolute';
+          temp.style.left='-9999px';
+          document.body.appendChild(temp);
+          temp.select();
+          document.execCommand('copy');
+          document.body.removeChild(temp);
+        }
+        copyStatus.textContent='Prompt copié dans le presse-papier!';
+      }catch(err){
+        copyStatus.textContent='Impossible de copier automatiquement. Sélectionnez et copiez manuellement.';
+      }
+      copyStatus.classList.remove('hidden');
+      copyStatus.setAttribute('aria-hidden','false');
+      copyStatus.focus?.();
+    });
+
+    function cleanIdea(rawIdea){
+      return rawIdea.replace(/\s+/g,' ').replace(/[\r\n]+/g,' ').trim();
+    }
+
+    function toPseudoEnglish(idea){
+      const replacements=[
+        [/\bécrivez\b/gi,'describe'],
+        [/\bdécris\b/gi,'describe'],
+        [/\bidée\b/gi,'idea'],
+        [/\bune\b/gi,'a'],
+        [/\bun\b/gi,'a'],
+        [/\bla\b/gi,'the'],
+        [/\ble\b/gi,'the'],
+        [/\bet\b/gi,'and'],
+        [/\bavec\b/gi,'with'],
+        [/\bpoutine\b/gi,'poutine'],
+        [/\bquébécois\b/gi,'Quebecois'],
+        [/\bqu\'?est-ce que\b/gi,'what'],
+        [/\bchante\b/gi,'sing'],
+        [/\bchantent\b/gi,'sing'],
+        [/\bvidéo\b/gi,'video'],
+        [/\bscène\b/gi,'scene'],
+        [/\bmonde\b/gi,'world']
+      ];
+      let english=idea;
+      replacements.forEach(([pattern,replacement])=>{
+        english=english.replace(pattern,replacement);
+      });
+      return english;
+    }
+
+    function buildFallbackPrompt(idea){
+      const sanitized=cleanIdea(idea);
+      const englishIdea=toPseudoEnglish(sanitized);
+      const atmosphereHints=['Warm lighting with subtle neon accents','Camera slowly pushes in with smooth motion','Include lively Quebec city ambience'];
+      const hint=atmosphereHints[sanitized.length % atmosphereHints.length];
+      return `PROMPT (English): Create a richly detailed cinematic scene showing ${englishIdea}. Highlight authentic Quebec culture, natural humor and warmth. ${hint}. Use 16:9 aspect ratio, natural colors and realistic movement.\n\n(Local fallback prompt généré sans service externe.)`;
+    }
+
+    async function requestPromptFromProxy(idea){
+      const res=await fetch(PROXY_URL,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          idea,
+          system:SYSTEM_INSTRUCTION_EDHICK,
+          systemInstruction:SYSTEM_INSTRUCTION_EDHICK
+        })
+      });
+      if(!res.ok){
+        throw new Error(`Réponse invalide (${res.status})`);
+      }
+      const data=await res.json();
+      const remoteText=data?.candidates?.[0]?.content?.parts?.map(part=>part?.text).filter(Boolean).join('\n').trim();
+      if(!remoteText){
+        throw new Error('Réponse vide du service');
+      }
+      return remoteText;
+    }
+
+    async function generatePrompt(){
+      const idea=cleanIdea(promptInput.value || '');
+      if(!idea){
+        promptOutput.textContent="Écrivez une idée d’abord 🙂";
+        promptOutput.classList.remove('hidden');
+        promptOutput.focus();
+        resetCopyHelpers();
+        return;
+      }
+      promptButton.disabled=true;
+      promptButton.setAttribute('aria-disabled','true');
+      promptOutput.classList.add('hidden');
+      promptLoading.classList.remove('hidden');
+      promptLoading.setAttribute('aria-hidden','false');
+      resetCopyHelpers();
+      let promptText='';
+      try{
+        promptText=await requestPromptFromProxy(idea);
+      }catch(proxyError){
+        console.warn('Proxy non disponible, utilisation du modèle local.',proxyError);
+        promptText=buildFallbackPrompt(idea);
+      }
+      promptOutput.textContent=promptText;
+      promptOutput.classList.remove('hidden');
+      promptOutput.focus();
+      showCopyButton();
+      promptButton.disabled=false;
+      promptButton.setAttribute('aria-disabled','false');
+      promptLoading.classList.add('hidden');
+      promptLoading.setAttribute('aria-hidden','true');
+    }
+  </script>
+</body>
+</html>
