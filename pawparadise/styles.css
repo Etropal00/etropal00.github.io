@@ -125,6 +125,7 @@ p {
   background: #ffffff;
   border: 1px solid var(--border);
   box-shadow: 0 8px 18px var(--shadow);
+  object-fit: cover;
 }
 
 h2 {
